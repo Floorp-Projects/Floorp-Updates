@@ -1,0 +1,24 @@
+on:
+  push:
+    branches: main
+   
+name: Upload
+jobs:
+  upload:
+    name: Upload
+    runs-on: ubuntu-latest
+    steps:
+    - name: Git Checkout
+      uses: actions/checkout@v2
+
+    - name: Upload files
+      uses: SamKirkland/FTP-Deploy-Action@4.3.2
+      with:
+        server: ${{ secrets.FTP_ADDR }}
+        username: ${{ secrets.FTP_USER }}
+        password: ${{ secrets.FTP_PASS }}
+        exclude: |
+          **/.git*
+          **/.git*/**
+          LICENSE
+          README.md
