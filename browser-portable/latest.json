@@ -1,6 +1,6 @@
 {
     "win-x86-64": {
         "version": "10.8.0",
-        "url": "https://github.com/Floorp-Projects/Floorp/releases/latest/download/floorp-win64.installer.exe"
+        "url": "https://ftp.mozilla.org/pub/firefox/nightly/2022/12/2022-12-28-04-40-22-mozilla-central/firefox-110.0a1.en-US.win64.zip"
     }
 }
