@@ -53,7 +53,7 @@ jobs:
         run: |
           mkdir ~/update_tmpfiles
           cd ~/update_tmpfiles
-          wget -nv "${{ inputs.mar-url }}" -o file.mar
+          wget -nv "${{ inputs.mar-url }}" -O file.mar
           MAR_FILE_SIZE=$(ls -l file.mar | awk '{print $5}')
           echo "MAR_FILE_SIZE=$MAR_FILE_SIZE" >> $GITHUB_ENV
 
@@ -73,5 +73,17 @@ jobs:
           '<updates>'
           '<updates>'
           )
-          for line in "${xml_found[@]}" ; do echo $line ; done
-          for line in "${xml_notfound[@]}" ; do echo $line ; done
+          for line in "${xml_found[@]}" ; do echo $line >> update_found.xml ; done
+          for line in "${xml_notfound[@]}" ; do echo $line >> update_notfound.xml ; done
+
+      - name: Copy files
+        run: |
+          for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
+            echo $dir
+            mkdir -p browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}
+            if [[ "$dir" == "${{ inputs.new-version }}" ]]; then
+              cp ~/update_tmpfiles/update_notfound.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+            else
+              cp ~/update_tmpfiles/update_found.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+            fi
+          done
