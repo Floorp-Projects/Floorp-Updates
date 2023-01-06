@@ -9,14 +9,6 @@ on:
         type: string
         required: true
         description: New version (e.g. 10.9.0)
-      new-firefox-version:
-        type: string
-        required: true
-        description: New firefox version (e.g. 102.6)
-      new-buildid:
-        type: string
-        required: true
-        description: New build id
       os:
         type: choice
         options:
@@ -41,8 +33,6 @@ jobs:
         run: |
           echo URL of mar file: ${{ inputs.mar-url }}
           echo New version: ${{ inputs.new-version }}
-          echo New firefox version: ${{ inputs.new-firefox-version }}
-          echo New build id: ${{ inputs.new-buildid }}
           echo OS: ${{ inputs.os }}
           echo Architecture: ${{ inputs.arch }}
 
@@ -57,13 +47,31 @@ jobs:
           MAR_FILE_SIZE=$(ls -l file.mar | awk '{print $5}')
           echo "MAR_FILE_SIZE=$MAR_FILE_SIZE" >> $GITHUB_ENV
 
+      - name: Get BuildID & Firefox Version
+        run: |
+          cd ~/update_tmpfiles
+          wget -nv https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.cache.level-3.toolchains.v3.linux64-mar-tools.latest/artifacts/public%2Fbuild%2Fmar-tools.tar.zst -O mar-tools.tar.zst
+          tar -xvf mar-tools.tar.zst
+          mkdir mar_tmp
+          cd ./mar_tmp
+          ~/update_tmpfiles/mar-tools/mar -x ~/update_tmpfiles/file.mar
+          cd ../
+          cp ./mar_tmp/application.ini application.ini.xz
+          xz -d application.ini.xz
+          BUILDID=$(cat "application.ini" | grep "^BuildID=" | awk -F= '{print $2}')
+          FIREFOX_VERSION=$(cat "application.ini" | grep "^Version=" | awk -F= '{print $2}' | sed "s/\.0$//")
+          echo "BUILDID=$BUILDID" >> $GITHUB_ENV
+          echo "FIREFOX_VERSION=$FIREFOX_VERSION" >> $GITHUB_ENV
+          echo BuildID: ${BUILDID}
+          echo Firefox Verison: ${FIREFOX_VERSION}
+
       - name: Create files
         run: |
           cd ~/update_tmpfiles
           xml_found=(
           '<?xml version="1.0" encoding="UTF-8"?>'
           '<updates>'
-          '    <update type="minor" displayVersion="${{ inputs.new-version }}" appVersion="${{ inputs.new-firefox-version }}" platformVersion="${{ inputs.new-firefox-version }}" buildID="${{ inputs.new-buildid }}" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">'
+          '    <update type="minor" displayVersion="${{ inputs.new-version }}" appVersion="${{ env.FIREFOX_VERSION }}" platformVersion="${{ env.FIREFOX_VERSION }}" buildID="${{ env.BUILDID }}" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">'
           '        <patch type="complete" URL="${{ inputs.mar-url }}" size="${{ env.MAR_FILE_SIZE }}"/>'
           '    </update>'
           '</updates>'
