@@ -1,0 +1,98 @@
+on:
+  workflow_dispatch:
+    inputs:
+      mar-url:
+        type: string
+        required: true
+        description: URL of mar file
+      new-version:
+        type: string
+        required: true
+        description: New version (e.g. 10.9.0)
+      new-firefox-version:
+        type: string
+        required: true
+        description: New firefox version (e.g. 102.6)
+      new-buildid:
+        type: string
+        required: true
+        description: New build id
+      os:
+        type: choice
+        options:
+        - WINNT
+        required: true
+        description: OS
+      arch:
+        type: choice
+        options:
+        - x86_64
+        - aarch64
+        required: true
+        description: Architecture
+
+name: Deliver updates to Floorp Browser
+
+jobs:
+  deliver-updates:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Details
+        run: |
+          echo URL of mar file: ${{ inputs.mar-url }}
+          echo New version: ${{ inputs.new-version }}
+          echo New firefox version: ${{ inputs.new-firefox-version }}
+          echo New build id: ${{ inputs.new-buildid }}
+          echo OS: ${{ inputs.os }}
+          echo Architecture: ${{ inputs.arch }}
+
+      - name: Clone
+        uses: actions/checkout@v2
+        
+      - name: Calculate mar file size
+        run: |
+          mkdir ~/update_tmpfiles
+          cd ~/update_tmpfiles
+          wget -nv "${{ inputs.mar-url }}" -O file.mar
+          MAR_FILE_SIZE=$(ls -l file.mar | awk '{print $5}')
+          echo "MAR_FILE_SIZE=$MAR_FILE_SIZE" >> $GITHUB_ENV
+
+      - name: Create files
+        run: |
+          cd ~/update_tmpfiles
+          xml_found=(
+          '<?xml version="1.0" encoding="UTF-8"?>'
+          '<updates>'
+          '    <update type="minor" displayVersion="${{ inputs.new-version }}" appVersion="${{ inputs.new-firefox-version }}" platformVersion="${{ inputs.new-firefox-version }}" buildID="${{ inputs.new-buildid }}" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">'
+          '        <patch type="complete" URL="${{ inputs.mar-url }}" size="${{ env.MAR_FILE_SIZE }}"/>'
+          '    </update>'
+          '</updates>'
+          )
+          xml_notfound=(
+          '<?xml version="1.0" encoding="UTF-8"?>'
+          '<updates>'
+          '</updates>'
+          )
+          for line in "${xml_found[@]}" ; do echo $line >> update_found.xml ; done
+          for line in "${xml_notfound[@]}" ; do echo $line >> update_notfound.xml ; done
+
+      - name: Copy files
+        run: |
+          mkdir -p browser/${{ inputs.new-version }}/${{ inputs.os }}/${{ inputs.arch }}
+          for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
+            echo $dir
+            mkdir -p browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}
+            if [[ "$dir" == "${{ inputs.new-version }}" ]]; then
+              cp ~/update_tmpfiles/update_notfound.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+            else
+              cp ~/update_tmpfiles/update_found.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+            fi
+          done
+
+      - name: Commit
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "A new version of Floorp Browser has been released!"
+          git push origin
