@@ -1,10 +1,18 @@
 on:
   workflow_dispatch:
     inputs:
+      mar-url:
+        type: string
+        required: true
+        description: URL of mar file
       new-version:
         type: string
         required: true
-        description: New version
+        description: New version (e.g. 10.9.0)
+      new-firefox-version:
+        type: string
+        required: true
+        description: New firefox version (e.g. 102.6)
       new-buildid:
         type: string
         required: true
@@ -31,7 +39,39 @@ jobs:
     steps:
       - name: Details
         run: |
+          echo URL of mar file: ${{ inputs.mar-url }}
           echo New version: ${{ inputs.new-version }}
+          echo New firefox version: ${{ inputs.new-firefox-version }}
           echo New build id: ${{ inputs.new-buildid }}
           echo OS: ${{ inputs.os }}
           echo Architecture: ${{ inputs.arch }}
+
+      - name: Clone
+        uses: actions/checkout@v2
+        
+      - name: Calculate mar file size
+        run: |
+          mkdir ~/update_tmpfiles
+          cd ~/update_tmpfiles
+          wget -nv "${{ inputs.mar-url }}" -o file.mar
+          MAR_FILE_SIZE=$(ls -l file.mar | awk '{print $5}')
+          echo "MAR_FILE_SIZE=$MAR_FILE_SIZE" >> $GITHUB_ENV
+
+      - name: Create files
+        run: |
+          cd ~/update_tmpfiles
+          xml_found=(
+          '<?xml version="1.0" encoding="UTF-8"?>'
+          '<updates>'
+          '    <update type="minor" displayVersion="${{ inputs.new-version }}" appVersion="${{ inputs.new-firefox-version }}" platformVersion="${{ inputs.new-firefox-version }}" buildID="${{ inputs.new-buildid }}" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">'
+          '        <patch type="complete" URL="${{ inputs.mar-url }}" size="${{ env.MAR_FILE_SIZE }}"/>'
+          '    </update>'
+          '<updates>'
+          )
+          xml_notfound=(
+          '<?xml version="1.0" encoding="UTF-8"?>'
+          '<updates>'
+          '<updates>'
+          )
+          echo $xml_found
+          echo $xml_notfound
