@@ -87,3 +87,9 @@ jobs:
               cp ~/update_tmpfiles/update_found.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
             fi
           done
+
+      - name: Commit
+        run: |
+          git add .
+          git commit -m "A new version of Floorp Browser has been released!"
+          git push origin
