@@ -1,0 +1,37 @@
+on:
+  workflow_dispatch:
+    inputs:
+      new-version:
+        type: string
+        required: true
+        description: New version
+      new-buildid:
+        type: string
+        required: true
+        description: New build id
+      os:
+        type: choice
+        options:
+        - WINNT
+        required: true
+        description: OS
+      arch:
+        type: choice
+        options:
+        - x86_64
+        - aarch64
+        required: true
+        description: Architecture
+
+name: Deliver updates to Floorp Browser
+
+jobs:
+  deliver-updates:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Details
+        run: |
+          echo New version: ${{ inputs.new-version }}
+          echo New build id: ${{ inputs.new-buildid }}
+          echo OS: ${{ inputs.os }}
+          echo Architecture: ${{ inputs.arch }}
