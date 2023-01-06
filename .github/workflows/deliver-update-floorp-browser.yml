@@ -60,18 +60,14 @@ jobs:
       - name: Create files
         run: |
           cd ~/update_tmpfiles
-          xml_found=(
-          '<?xml version="1.0" encoding="UTF-8"?>'
+          xml_found=('<?xml version="1.0" encoding="UTF-8"?>'
           '<updates>'
           '    <update type="minor" displayVersion="${{ inputs.new-version }}" appVersion="${{ inputs.new-firefox-version }}" platformVersion="${{ inputs.new-firefox-version }}" buildID="${{ inputs.new-buildid }}" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">'
           '        <patch type="complete" URL="${{ inputs.mar-url }}" size="${{ env.MAR_FILE_SIZE }}"/>'
           '    </update>'
+          '<updates>')
+          xml_notfound=('<?xml version="1.0" encoding="UTF-8"?>'
           '<updates>'
-          )
-          xml_notfound=(
-          '<?xml version="1.0" encoding="UTF-8"?>'
-          '<updates>'
-          '<updates>'
-          )
+          '<updates>')
           echo $xml_found
           echo $xml_notfound
