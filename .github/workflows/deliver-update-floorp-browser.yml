@@ -66,18 +66,19 @@ jobs:
           '    <update type="minor" displayVersion="${{ inputs.new-version }}" appVersion="${{ inputs.new-firefox-version }}" platformVersion="${{ inputs.new-firefox-version }}" buildID="${{ inputs.new-buildid }}" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">'
           '        <patch type="complete" URL="${{ inputs.mar-url }}" size="${{ env.MAR_FILE_SIZE }}"/>'
           '    </update>'
-          '<updates>'
+          '</updates>'
           )
           xml_notfound=(
           '<?xml version="1.0" encoding="UTF-8"?>'
           '<updates>'
-          '<updates>'
+          '</updates>'
           )
           for line in "${xml_found[@]}" ; do echo $line >> update_found.xml ; done
           for line in "${xml_notfound[@]}" ; do echo $line >> update_notfound.xml ; done
 
       - name: Copy files
         run: |
+          mkdir -p browser/${{ inputs.new-version }}/${{ inputs.os }}/${{ inputs.arch }}
           for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
             echo $dir
             mkdir -p browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}
