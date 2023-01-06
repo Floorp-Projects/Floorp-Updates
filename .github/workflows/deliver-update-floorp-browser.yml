@@ -90,6 +90,8 @@ jobs:
 
       - name: Commit
         run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
           git add .
           git commit -m "A new version of Floorp Browser has been released!"
           git push origin
