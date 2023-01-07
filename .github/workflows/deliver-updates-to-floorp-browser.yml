@@ -5,10 +5,6 @@ on:
         type: string
         required: true
         description: URL of mar file
-      new-version:
-        type: string
-        required: true
-        description: New version (e.g. 10.9.0)
       os:
         type: choice
         options:
@@ -32,7 +28,6 @@ jobs:
       - name: Details
         run: |
           echo URL of mar file: ${{ inputs.mar-url }}
-          echo New version: ${{ inputs.new-version }}
           echo OS: ${{ inputs.os }}
           echo Architecture: ${{ inputs.arch }}
 
@@ -49,7 +44,7 @@ jobs:
           MAR_FILE_SIZE=$(ls -l file.mar | awk '{print $5}')
           echo "MAR_FILE_SIZE=$MAR_FILE_SIZE" >> $GITHUB_ENV
 
-      - name: Get BuildID & Firefox Version
+      - name: Get Display Version, BuildID and Firefox Version
         run: |
           cd ~/update_tmpfiles
           wget -nv https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.cache.level-3.toolchains.v3.linux64-mar-tools.latest/artifacts/public%2Fbuild%2Fmar-tools.tar.zst -O mar-tools.tar.zst
@@ -60,8 +55,18 @@ jobs:
           cd ../
           cp ./mar_tmp/application.ini application.ini.xz
           xz -d application.ini.xz
+          cp ./mar_tmp/omni.ja omni.ja.xz
+          xz -d omni.ja.xz
+          mkdir omni_tmp
+          set +e
+          unzip -d ./omni_tmp omni.ja
+          set -e
+          cp ./omni_tmp/modules/AppConstants.* AppConstants.jsfile
+          DISPLAY_VERSION=$(cat "AppConstants.jsfile" | grep "MOZ_APP_VERSION_DISPLAY: " | awk '{print $2}' | sed 's/^"//' | sed 's/",$//')
           BUILDID=$(cat "application.ini" | grep "^BuildID=" | awk -F= '{print $2}')
           FIREFOX_VERSION=$(cat "application.ini" | grep "^Version=" | awk -F= '{print $2}' | sed "s/\.0$//")
+          echo "Display Version: ${DISPLAY_VERSION}"
+          echo "DISPLAY_VERSION=$DISPLAY_VERSION" >> $GITHUB_ENV
           echo "BUILDID=$BUILDID" >> $GITHUB_ENV
           echo "FIREFOX_VERSION=$FIREFOX_VERSION" >> $GITHUB_ENV
           echo BuildID: ${BUILDID}
@@ -73,7 +78,7 @@ jobs:
           xml_found=(
           '<?xml version="1.0" encoding="UTF-8"?>'
           '<updates>'
-          '    <update type="minor" displayVersion="${{ inputs.new-version }}" appVersion="${{ env.FIREFOX_VERSION }}" platformVersion="${{ env.FIREFOX_VERSION }}" buildID="${{ env.BUILDID }}" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">'
+          '    <update type="minor" displayVersion="${{ env.DISPLAY_VERSION }}" appVersion="${{ env.FIREFOX_VERSION }}" platformVersion="${{ env.FIREFOX_VERSION }}" buildID="${{ env.BUILDID }}" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">'
           '        <patch type="complete" URL="${{ inputs.mar-url }}" size="${{ env.MAR_FILE_SIZE }}"/>'
           '    </update>'
           '</updates>'
@@ -88,11 +93,11 @@ jobs:
 
       - name: Copy files
         run: |
-          mkdir -p browser/${{ inputs.new-version }}/${{ inputs.os }}/${{ inputs.arch }}
+          mkdir -p browser/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/${{ inputs.arch }}
           for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
             echo $dir
             mkdir -p browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}
-            if [[ "$dir" == "${{ inputs.new-version }}" ]]; then
+            if [[ "$dir" == "${{ env.DISPLAY_VERSION }}" ]]; then
               cp ~/update_tmpfiles/update_notfound.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
             else
               cp ~/update_tmpfiles/update_found.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
@@ -105,4 +110,4 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "A new version of Floorp Browser has been released!"
-          git push origin
+          #git push origin
