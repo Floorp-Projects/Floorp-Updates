@@ -88,8 +88,14 @@ jobs:
           '<updates>'
           '</updates>'
           )
+          xml_addon=(
+          '<?xml version="1.0"?>'
+          '<updates>'
+          '</updates>'
+          )
           for line in "${xml_found[@]}" ; do echo $line >> update_found.xml ; done
           for line in "${xml_notfound[@]}" ; do echo $line >> update_notfound.xml ; done
+          for line in "${xml_addon[@]}" ; do echo $line >> update_addon.xml ; done
 
       - name: Copy files
         run: |
@@ -103,6 +109,9 @@ jobs:
               cp ~/update_tmpfiles/update_found.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
             fi
           done
+          
+          mkdir -p systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}
+          cp ~/update_tmpfiles/update_addon.xml systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/update.xml
 
       - name: Commit
         run: |
