@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
+<update type="minor" displayVersion="10.9.0" appVersion="102.7" platformVersion="102.7" buildID="20230113103715" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v10.9.0/WINNT-v10.9.0.mar" size="105610939"/>
+</update>
 </updates>
