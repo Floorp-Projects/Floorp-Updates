@@ -103,10 +103,12 @@ jobs:
           for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
             echo $dir
             mkdir -p browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}
-            if [[ "$dir" == "${{ env.DISPLAY_VERSION }}" ]]; then
-              cp ~/update_tmpfiles/update_notfound.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
-            else
-              cp ~/update_tmpfiles/update_found.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+            if [[ "$dir" != "beta" ]]; then
+              if [[ "$dir" == "${{ env.DISPLAY_VERSION }}" ]]; then
+                cp ~/update_tmpfiles/update_notfound.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+              else
+                cp ~/update_tmpfiles/update_found.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+              fi
             fi
           done
           
