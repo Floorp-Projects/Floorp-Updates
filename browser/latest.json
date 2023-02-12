@@ -1,7 +1,7 @@
 {
     "win-x86-64": {
         "version": "10.10.0",
-        "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.10.0/floorp-10.10.0.win64.installer.exe",
+        "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.10.0/floorp-win64.installer.exe",
         "notify": false
     },
     "linux-x86-64": {
