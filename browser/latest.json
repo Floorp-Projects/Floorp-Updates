@@ -12,7 +12,7 @@
     "linux-arm": {
         "version": "10.10.1",
         "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.10.1/floorp-10.10.1.en-US.linux-aarch64.tar.bz2",
-        "notify": false
+        "notify": true
     },
     "mac": {
         "version": "10.10.1",
