@@ -9,6 +9,7 @@ on:
         type: choice
         options:
         - WINNT
+        - Linux
         required: true
         description: OS
       arch:
