@@ -1,22 +1,22 @@
 {
     "win-x86-64": {
-        "version": "10.13.0",
-        "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.13.0/floorp-win64.installer.exe",
+        "version": "10.14.0",
+        "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.14.0/floorp-win64.installer.exe",
         "notify": false
     },
     "linux-x86-64": {
-        "version": "10.13.0",
-        "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.13.0/floorp-10.13.0.en-US.linux-x86_64.tar.bz2",
+        "version": "10.14.0",
+        "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.14.0/floorp-10.14.0.en-US.linux-x86_64.tar.bz2",
         "notify": false
     },
     "linux-arm": {
-        "version": "10.13.0",
-        "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.13.0/floorp-10.13.0.en-US.linux-aarch64.tar.bz2",
+        "version": "10.14.0",
+        "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.14.0/floorp-10.14.0.en-US.linux-aarch64.tar.bz2",
         "notify": true
     },
     "mac": {
-        "version": "10.13.0",
-        "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.13.0/floorp-macOS-universal.dmg",
+        "version": "10.14.0",
+        "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.14.0/floorp-macOS-universal.dmg",
         "notify": true
     }
 }
