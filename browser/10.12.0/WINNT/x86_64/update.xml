@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-<update type="minor" displayVersion="10.14.0" appVersion="102.12" platformVersion="102.12" buildID="20230603164912" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
-<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v10.14.0/WINNT-v10.14.0.mar" size="85717667"/>
+<update type="minor" displayVersion="10.15.0" appVersion="102.13" platformVersion="102.13" buildID="20230701055542" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v10.15.0/WINNT-v10.15.0.mar" size="85995735"/>
 </update>
 </updates>
