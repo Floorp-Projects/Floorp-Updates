@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
+<update type="minor" displayVersion="10.15.0" appVersion="102.13" platformVersion="102.13" buildID="20230701060836" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v10.15.0/LINUX-x86_64-10.15.0.mar" size="83711907"/>
+</update>
 </updates>
