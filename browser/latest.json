@@ -17,6 +17,6 @@
     "mac": {
         "version": "10.16.0",
         "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v10.16.0/floorp-macOS-universal.dmg",
-        "notify": false
+        "notify": true
     }
 }
