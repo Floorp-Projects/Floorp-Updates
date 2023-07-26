@@ -38,7 +38,7 @@ jobs:
             echo "Updating latest.json"
             echo "new version: ${{ github.event.inputs.display-version }}"
             echo "current version: ${{ env.CURRENT_VERSION }}"
-            sed -i 's/${{ env.CURRENT_VERSION }}/${{ github.event.inputs.display-version }}/g' latest.json
+            sed -i 's/${{ env.CURRENT_VERSION }}/${{ github.event.inputs.display-version }}/g' browser/latest.json
 
        - name: Update current_version.txt
          run: |
