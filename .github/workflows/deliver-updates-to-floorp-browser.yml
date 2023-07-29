@@ -20,6 +20,18 @@ on:
         - aarch64
         required: true
         description: Architecture
+      buildid:
+        type: string
+        required: false
+        description: BuildID
+      firefox-version:
+        type: string
+        required: false
+        description: Firefox Version
+      display-version:
+        type: string
+        required: false
+        description: Display Version
 
 name: Deliver updates to Floorp Browser
 
@@ -46,7 +58,8 @@ jobs:
           MAR_FILE_SIZE=$(ls -l file.mar | awk '{print $5}')
           echo "MAR_FILE_SIZE=$MAR_FILE_SIZE" >> $GITHUB_ENV
 
-      - name: Get Display Version, BuildID and Firefox Version
+      - name: Get Display Version, BuildID and Firefox Version for Linux & Windows
+        if: ${{ inputs.os }} != 'Darwin'
         run: |
           cd ~/update_tmpfiles
           wget -nv https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.cache.level-3.toolchains.v3.linux64-mar-tools.latest/artifacts/public%2Fbuild%2Fmar-tools.tar.zst -O mar-tools.tar.zst
@@ -73,6 +86,17 @@ jobs:
           echo "FIREFOX_VERSION=$FIREFOX_VERSION" >> $GITHUB_ENV
           echo BuildID: ${BUILDID}
           echo Firefox Verison: ${FIREFOX_VERSION}
+
+      - name: Get Display Version, BuildID and Firefox Version for macOS
+        if: ${{ inputs.os }} == 'Darwin'
+        run: |
+          echo "DISPLAY_VERSION=${{ inputs.display-version }}" >> $GITHUB_ENV
+          echo "BUILDID=${{ inputs.buildid }}" >> $GITHUB_ENV
+          echo "FIREFOX_VERSION=${{ inputs.firefox-version }}" >> $GITHUB_ENV
+
+          echo "Display Version: ${{ inputs.display-version }}"
+          echo "BuildID: ${{ inputs.buildid }}"
+          echo "Firefox Version: ${{ inputs.firefox-version }}"
 
       - name: Create files
         run: |
