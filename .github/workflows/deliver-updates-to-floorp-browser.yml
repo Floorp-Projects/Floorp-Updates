@@ -45,6 +45,8 @@ jobs:
           echo OS: ${{ inputs.os }}
           echo Architecture: ${{ inputs.arch }}
 
+          echo "TARGET_OS=${{ inputs.os }}" >> $GITHUB_ENV
+ 
       - name: Clone
         uses: actions/checkout@v2
         with:
@@ -59,7 +61,7 @@ jobs:
           echo "MAR_FILE_SIZE=$MAR_FILE_SIZE" >> $GITHUB_ENV
 
       - name: Get Display Version, BuildID and Firefox Version for Linux & Windows
-        if: ${{ inputs.os }} != 'Darwin'
+        if: env.TARGET_OS != 'Darwin'
         run: |
           cd ~/update_tmpfiles
           wget -nv https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.cache.level-3.toolchains.v3.linux64-mar-tools.latest/artifacts/public%2Fbuild%2Fmar-tools.tar.zst -O mar-tools.tar.zst
@@ -88,7 +90,7 @@ jobs:
           echo Firefox Verison: ${FIREFOX_VERSION}
 
       - name: Get Display Version, BuildID and Firefox Version for macOS
-        if: ${{ inputs.os }} == 'Darwin'
+        if: env.TARGET_OS == 'Darwin'
         run: |
           echo "DISPLAY_VERSION=${{ inputs.display-version }}" >> $GITHUB_ENV
           echo "BUILDID=${{ inputs.buildid }}" >> $GITHUB_ENV
