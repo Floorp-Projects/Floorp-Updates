@@ -1,6 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-<update type="minor" displayVersion="11.1.0" appVersion="115.1.0" platformVersion="115.1.0" buildID="20230804071929" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
-<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.1.0/DARWIN-Universal-11.1.0.mar" size="125234217"/>
-</update>
 </updates>
