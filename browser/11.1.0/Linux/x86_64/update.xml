@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
+<update type="minor" displayVersion="11.1.1" appVersion="115.1" platformVersion="115.1" buildID="20230813020301" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.1.1/LINUX-x86_64.mar" size="87143263"/>
+</update>
 </updates>
