@@ -35,7 +35,7 @@ on:
       release-note-url:
         type: string
         default: https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/
-        required: true
+        required: false
         description: Release Note URL
 
 name: Deliver updates to Floorp Browser
