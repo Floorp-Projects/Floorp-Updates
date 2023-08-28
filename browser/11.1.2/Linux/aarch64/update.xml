@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
+<update type="minor" displayVersion="11.2.0" appVersion="115.2" platformVersion="115.2" buildID="20230828092827" detailsURL="https://blog.ablaze.one/3431/2023-08-22/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.2.0/LINUX-aarch64.mar" size="80617359"/>
+</update>
 </updates>
