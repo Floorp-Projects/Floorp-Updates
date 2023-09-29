@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
+<update type="minor" displayVersion="11.4.1" appVersion="115.4" platformVersion="115.4" buildID="20230929020805" detailsURL="https://blog.ablaze.one/3563/2023-09-23/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.4.1/WINNT-x86_64.mar" size="88299924"/>
+</update>
 </updates>
