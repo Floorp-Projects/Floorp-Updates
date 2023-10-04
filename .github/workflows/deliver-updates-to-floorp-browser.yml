@@ -13,6 +13,13 @@ on:
         - Darwin
         required: true
         description: OS
+      buildVersion:
+        type: choice
+        required: true
+        default: normal
+        options:
+        - normal
+        - lightning
       arch:
         type: choice
         options:
@@ -131,7 +138,8 @@ jobs:
           for line in "${xml_notfound[@]}" ; do echo $line >> update_notfound.xml ; done
           for line in "${xml_addon[@]}" ; do echo $line >> update_addon.xml ; done
 
-      - name: Copy files
+      - name: Copy files normal build
+        if: ${{ inputs.buildVersion }} == 'normal'
         run: |
           mkdir -p browser/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/${{ inputs.arch }}
           for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
@@ -148,6 +156,22 @@ jobs:
           
           mkdir -p systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}
           cp ~/update_tmpfiles/update_addon.xml systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/update.xml
+
+      - name: Copy files Lightning build
+        if: ${{ inputs.buildVersion }} == 'lightning'
+        run: |
+          mkdir -p lightning/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/${{ inputs.arch }}
+          for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
+            echo $dir
+            mkdir -p lightning/${dir}/${{ inputs.os }}/${{ inputs.arch }}
+            if [[ "$dir" != "beta" ]]; then
+              if [[ "$dir" == "${{ env.DISPLAY_VERSION }}" ]]; then
+                cp ~/update_tmpfiles/update_notfound.xml lightning/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+              else
+                cp ~/update_tmpfiles/update_found.xml lightning/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+              fi
+            fi
+          done
 
       - name: Commit
         run: |
