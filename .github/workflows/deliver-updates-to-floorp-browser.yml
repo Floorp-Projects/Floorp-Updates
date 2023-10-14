@@ -139,39 +139,32 @@ jobs:
           for line in "${xml_addon[@]}" ; do echo $line >> update_addon.xml ; done
 
       - name: Copy files normal build
-        if: ${{ inputs.buildVersion }} == 'normal'
         run: |
-          mkdir -p browser/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/${{ inputs.arch }}
-          for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
+          if [[ $GHA_BUILD_MACHINE == 'normal' ]]; then
+            export BUILD_TYPE=`echo "browser"`
+            echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
+          else
+            export BUILD_TYPE=`echo "lightning"`
+            echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
+          fi
+
+          mkdir -p ${{ env.BUILD_TYPE }}/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/${{ inputs.arch }}
+          for dir in $(ls -l ${{ env.BUILD_TYPE }} | grep ^d | awk '{print $9}'); do
             echo $dir
-            mkdir -p browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}
+            mkdir -p ${{ env.BUILD_TYPE }}/${dir}/${{ inputs.os }}/${{ inputs.arch }}
             if [[ "$dir" != "beta" ]]; then
               if [[ "$dir" == "${{ env.DISPLAY_VERSION }}" ]]; then
-                cp ~/update_tmpfiles/update_notfound.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+                cp ~/update_tmpfiles/update_notfound.xml ${{ env.BUILD_TYPE }}/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
               else
-                cp ~/update_tmpfiles/update_found.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+                cp ~/update_tmpfiles/update_found.xml ${{ env.BUILD_TYPE }}/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
               fi
             fi
           done
           
           mkdir -p systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}
           cp ~/update_tmpfiles/update_addon.xml systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/update.xml
-
-      - name: Copy files Lightning build
-        if: ${{ inputs.buildVersion }} == 'lightning'
-        run: |
-          mkdir -p lightning/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/${{ inputs.arch }}
-          for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
-            echo $dir
-            mkdir -p lightning/${dir}/${{ inputs.os }}/${{ inputs.arch }}
-            if [[ "$dir" != "beta" ]]; then
-              if [[ "$dir" == "${{ env.DISPLAY_VERSION }}" ]]; then
-                cp ~/update_tmpfiles/update_notfound.xml lightning/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
-              else
-                cp ~/update_tmpfiles/update_found.xml lightning/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
-              fi
-            fi
-          done
+        env:
+         GHA_BUILD_VERSION: ${{ inputs.buildVersion }}
 
       - name: Commit
         run: |
