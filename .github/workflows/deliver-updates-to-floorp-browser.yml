@@ -138,16 +138,18 @@ jobs:
           for line in "${xml_notfound[@]}" ; do echo $line >> update_notfound.xml ; done
           for line in "${xml_addon[@]}" ; do echo $line >> update_addon.xml ; done
 
-      - name: Copy files normal build
+      - name: check dir
         run: |
           if [[ $GHA_BUILD_MACHINE == 'normal' ]]; then
-            export BUILD_TYPE=`echo "browser"`
+            export BUILD_TYPE="browser"
             echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
           else
-            export BUILD_TYPE=`echo "lightning"`
+            export BUILD_TYPE="lightning"
             echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
           fi
 
+      - name: Copy files normal build
+        run: |
           mkdir -p ${{ env.BUILD_TYPE }}/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/${{ inputs.arch }}
           for dir in $(ls -l ${{ env.BUILD_TYPE }} | grep ^d | awk '{print $9}'); do
             echo $dir
