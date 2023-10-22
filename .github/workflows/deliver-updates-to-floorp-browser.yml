@@ -147,6 +147,8 @@ jobs:
             export BUILD_TYPE="lightning"
             echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
           fi
+        env:
+          GHA_BUILD_MACHINE: ${{ inputs.buildVersion }}
 
       - name: Copy files normal build
         run: |
