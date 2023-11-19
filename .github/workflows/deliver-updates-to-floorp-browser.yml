@@ -13,13 +13,6 @@ on:
         - Darwin
         required: true
         description: OS
-      buildVersion:
-        type: choice
-        required: true
-        default: normal
-        options:
-        - normal
-        - lightning
       arch:
         type: choice
         options:
@@ -138,37 +131,23 @@ jobs:
           for line in "${xml_notfound[@]}" ; do echo $line >> update_notfound.xml ; done
           for line in "${xml_addon[@]}" ; do echo $line >> update_addon.xml ; done
 
-      - name: check dir
+      - name: Copy files
         run: |
-          if [[ $GHA_BUILD_MACHINE == 'normal' ]]; then
-            export BUILD_TYPE="browser"
-            echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
-          else
-            export BUILD_TYPE="lightning"
-            echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
-          fi
-        env:
-          GHA_BUILD_MACHINE: ${{ inputs.buildVersion }}
-
-      - name: Copy files normal build
-        run: |
-          mkdir -p ${{ env.BUILD_TYPE }}/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/${{ inputs.arch }}
-          for dir in $(ls -l ${{ env.BUILD_TYPE }} | grep ^d | awk '{print $9}'); do
+          mkdir -p browser/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/${{ inputs.arch }}
+          for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
             echo $dir
-            mkdir -p ${{ env.BUILD_TYPE }}/${dir}/${{ inputs.os }}/${{ inputs.arch }}
+            mkdir -p browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}
             if [[ "$dir" != "beta" ]]; then
               if [[ "$dir" == "${{ env.DISPLAY_VERSION }}" ]]; then
-                cp ~/update_tmpfiles/update_notfound.xml ${{ env.BUILD_TYPE }}/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+                cp ~/update_tmpfiles/update_notfound.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
               else
-                cp ~/update_tmpfiles/update_found.xml ${{ env.BUILD_TYPE }}/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
+                cp ~/update_tmpfiles/update_found.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
               fi
             fi
           done
           
           mkdir -p systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}
           cp ~/update_tmpfiles/update_addon.xml systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/update.xml
-        env:
-         GHA_BUILD_VERSION: ${{ inputs.buildVersion }}
 
       - name: Commit
         run: |
