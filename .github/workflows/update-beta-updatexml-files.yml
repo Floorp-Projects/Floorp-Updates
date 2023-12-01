@@ -23,7 +23,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v2
               with:
-                ${{ Secrets.PAT }}
+                token: ${{ secrets.PAT }} 
             - name: download update.xml
             # Donloaded file name is fixed vanila name
               run: |
