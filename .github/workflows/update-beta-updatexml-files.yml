@@ -1,0 +1,46 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+name: Replace beta updat.xml for Windows, macOS and Linux
+on:
+   workflow_dispatch:
+      inputs:
+        win-x86_64-update-xml:
+          description: 'Windows x86_64 update.xml url'
+          required: true
+        linux-x86_64-update-xml:
+            description: 'Linux x86_64 update.xml url'
+            required: true
+        macOS-Universal-update-xml:
+            description: 'macOS Universal update.xml url'
+            required: true
+jobs:
+    replace:
+        name: Replace beta update.xml for Windows, macOS and Linux
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: download update.xml
+            # Donloaded file name is fixed vanila name
+              run: |
+                curl -L -o WINNT-x86_64.xml ${{ github.event.inputs.win-x86_64-update-xml }}
+                curl -L -o LINUX-x86_64.xml ${{ github.event.inputs.linux-x86_64-update-xml }}
+                curl -L -o DARWIN-Universal.xml ${{ github.event.inputs.macOS-Universal-update-xml }}
+            - name: config git
+              run: |
+                git config --global user.name "Ryosuke Asano"
+                git config --global user.email "ryosukeusuusu@gmail.com"
+            - name: move update.xml
+              run: |
+                mv WINNT-x86_64.xml ./browser/beta/
+                mv LINUX-x86_64.xml ./browser/beta/
+                mv DARWIN-Universal.xml ./browser/beta/
+
+            - name: Replace update.xml
+              run: |
+                git add .
+                git commit -m "Update Floorp Daylight"
+                git pull -r
+                git push
