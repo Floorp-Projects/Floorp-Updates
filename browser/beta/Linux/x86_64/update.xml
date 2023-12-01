@@ -10,8 +10,8 @@
     >
     <patch
       type="complete"
-      URL="https://github.com/Floorp-Projects/Floorp/releases/download/beta/WINNT-x86_64.mar"
-      size="88611864"
+      URL="https://github.com/Floorp-Projects/Floorp/releases/download/beta/LINUX-x86_64.mar"
+      size="87748875"
     />
-    </update>
-  </updates>
+  </update>
+</updates>
