@@ -34,9 +34,10 @@ jobs:
                 git config --global user.email "ryosukeusuusu@gmail.com"
             - name: move update.xml
               run: |
-                mv WINNT-x86_64.xml ./browser/beta/
-                mv LINUX-x86_64.xml ./browser/beta/
-                mv DARWIN-Universal.xml ./browser/beta/
+                mv WINNT-x86_64.xml ./browser/beta/WINNT/x86_64/update.xml
+                mv LINUX-x86_64.xml ./browser/beta/Linux/x86_64/update.xml
+                cp DARWIN-Universal.xml ./browser/beta/x86_64/update.xml
+                mv DARWIN-Universal.xml ./browser/beta/aarch64/update.xml 
 
             - name: Replace update.xml
               run: |
