@@ -30,8 +30,8 @@ jobs:
                 curl -L -o DARWIN-Universal.xml ${{ github.event.inputs.macOS-Universal-update-xml }}
             - name: config git
               run: |
-                git config --global user.name "Ryosuke Asano"
-                git config --global user.email "ryosukeusuusu@gmail.com"
+                git config --global user.name "github-actions[bot]"
+                git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
             - name: move update.xml
               run: |
                 mkdir -p ./browser/beta/WINNT/x86_64/
