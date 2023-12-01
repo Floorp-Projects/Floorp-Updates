@@ -6,13 +6,13 @@ name: Replace beta updat.xml for Windows, macOS and Linux
 on:
    workflow_dispatch:
       inputs:
-        winx86_64xml:
+        win-x86_64-update-xml:
           description: 'Windows x86_64 update.xml url'
           required: true
-        linuxx86_64xml:
+        linux-x86_64-update-xml:
             description: 'Linux x86_64 update.xml url'
             required: true
-        macOSUniversalupdatexml:
+        macOS-Universal-update-xml:
             description: 'macOS Universal update.xml url'
             required: true
 jobs:
@@ -25,9 +25,9 @@ jobs:
             - name: download update.xml
             # Donloaded file name is fixed vanila name
               run: |
-                curl -L -o WINNT-x86_64.xml ${{ github.event.inputs.winx86_64xml }}
-                curl -L -o LINUX-x86_64.xml ${{ github.event.inputs.linuxx86_64xml }}
-                curl -L -o DARWIN-Universal.xml ${{ github.event.inputs.macOSUniversalupdatexml }}
+                curl -L -o WINNT-x86_64.xml ${{ github.event.inputs.win-x86_64-update-xml }}
+                curl -L -o LINUX-x86_64.xml ${{ github.event.inputs.linux-x86_64-update-xml }}
+                curl -L -o DARWIN-Universal.xml ${{ github.event.inputs.macOS-Universal-update-xml }}
             - name: config git
               run: |
                 git config --global user.name "Ryosuke Asano"
