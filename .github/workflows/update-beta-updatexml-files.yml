@@ -22,6 +22,8 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v2
+              with:
+                ${{ Secrets.PAT }}
             - name: download update.xml
             # Donloaded file name is fixed vanila name
               run: |
@@ -31,7 +33,7 @@ jobs:
             - name: config git
               run: |
                git config --global user.name "surapunoyousei"
-               git config --global user.email "73892113+surapunoyousei@users.noreply.github.com"
+               git config --global user.email "ryosukeusuusu@gmail.com"
             - name: move update.xml
               run: |
                 mkdir -p ./browser/beta/WINNT/x86_64/
