@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
+<update type="minor" displayVersion="11.7.1" appVersion="115.6.0" platformVersion="115.6.0" buildID="20231219011847" detailsURL="https://blog.ablaze.one/3746/2023-12-00/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.7.1/DARWIN-Universal.mar" size="125205533"/>
+</update>
 </updates>
