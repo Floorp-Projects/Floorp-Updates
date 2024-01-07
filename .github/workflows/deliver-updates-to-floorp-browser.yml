@@ -56,7 +56,7 @@ jobs:
       - name: Clone
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.PAT }}
         
       - name: Calculate mar file size
         run: |
