@@ -2,16 +2,16 @@
   <updates>
     <update
       type="minor"
-      displayVersion="11.7.1"
-      appVersion="115.6.0"
-      platformVersion="115.6.0"
-      buildID="20240115090819"
+      displayVersion="11.8.0"
+      appVersion="115.7.0"
+      platformVersion="115.7.0"
+      buildID="20240116034445"
       detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/"
     >
     <patch
       type="complete"
       URL="https://github.com/Floorp-Projects/Floorp/releases/download/beta/WINNT-x86_64.mar"
-      size="88599660"
+      size="88637632"
     />
     </update>
   </updates>
