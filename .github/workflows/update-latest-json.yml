@@ -21,6 +21,8 @@ jobs:
 
        - name: Checkout
          uses: actions/checkout@v2
+         with:
+          token: ${{ secrets.PAT }} 
 
        - name: Git config
          run: |
