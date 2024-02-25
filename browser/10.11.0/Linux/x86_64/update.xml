@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-<update type="minor" displayVersion="11.10.2" appVersion="115.8" platformVersion="115.8" buildID="20240219021942" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
-<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.10.2/LINUX-x86_64.mar" size="87630627"/>
+<update type="minor" displayVersion="11.10.3" appVersion="115.8" platformVersion="115.8" buildID="20240225125545" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.10.3/LINUX-x86_64.mar" size="87610959"/>
 </update>
 </updates>
