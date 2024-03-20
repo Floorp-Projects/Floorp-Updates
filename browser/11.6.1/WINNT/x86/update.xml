@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-<update type="minor" displayVersion="11.11.0" appVersion="115.9" platformVersion="115.9" buildID="20240318123045" detailsURL="https://blog.ablaze.one/4115/2024-03-21/">
-<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.11.0/WINNT-x86.mar" size="86077287"/>
+<update type="minor" displayVersion="11.11.1" appVersion="115.9" platformVersion="115.9" buildID="20240320042613" detailsURL="https://blog.ablaze.one/4115/2024-03-21/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.11.1/WINNT-x86.mar" size="86077795"/>
 </update>
 </updates>
