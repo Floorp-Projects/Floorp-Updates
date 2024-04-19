@@ -5,13 +5,13 @@
       displayVersion="11.12.1"
       appVersion="115.10.0"
       platformVersion="115.10.0"
-      buildID="20240417090927"
+      buildID="20240418090745"
       detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/"
     >
     <patch
       type="complete"
       URL="https://github.com/Floorp-Projects/Floorp/releases/download/beta/WINNT-x86_64.mar"
-      size="89057824"
+      size="89060420"
     />
     </update>
   </updates>
