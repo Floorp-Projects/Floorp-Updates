@@ -5,13 +5,13 @@
       displayVersion="11.12.2"
       appVersion="115.10.0"
       platformVersion="115.10.0"
-      buildID="20240420090709"
+      buildID="20240421090753"
       detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/"
     >
     <patch
       type="complete"
       URL="https://github.com/Floorp-Projects/Floorp/releases/download/beta/LINUX-x86_64.mar"
-      size="88244743"
+      size="88248735"
     />
   </update>
 </updates>
