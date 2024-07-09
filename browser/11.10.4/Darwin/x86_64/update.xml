@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-<update type="minor" displayVersion="11.14.1" appVersion="115.13.0" platformVersion="115.13.0" buildID="" detailsURL="https://blog.ablaze.one/4375/2024-06-00/">
-<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.14.1/DARWIN-Universal.mar" size="123515053"/>
+<update type="minor" displayVersion="11.15.0" appVersion="115.13.0" platformVersion="115.13.0" buildID="" detailsURL="https://blog.ablaze.one/4397/2024-07-21/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.15.0/DARWIN-Universal.mar" size="123467529"/>
 </update>
 </updates>
