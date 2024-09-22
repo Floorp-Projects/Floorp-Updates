@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <updates>
-    <update type="minor" displayVersion="11.18.1" appVersion="128.3.0" platformVersion="128.3.0" buildID="20240920090149" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
-    <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/beta/DARWIN-Universal.mar" size="135513476" />
+    <update type="minor" displayVersion="11.18.1" appVersion="128.3.0" platformVersion="128.3.0" buildID="20240921090142" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
+    <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/beta/DARWIN-Universal.mar" size="135545172" />
   </update>
 </updates>
