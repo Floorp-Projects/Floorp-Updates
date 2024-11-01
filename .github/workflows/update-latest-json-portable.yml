@@ -13,8 +13,8 @@ on:
 
 jobs:
     update-latest-json:
-     runs-on: ubuntu-latest
-     steps:
+      runs-on: ubuntu-latest
+      steps:
        - name: Details
          run: |
             echo "Display version: ${{ github.event.inputs.display-version }}"
