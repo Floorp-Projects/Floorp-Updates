@@ -17,41 +17,41 @@ jobs:
     steps:
       - name: Details
         run: |
-            echo "Display version: ${{ github.event.inputs.display-version }}"
+          echo "Display version: ${{ github.event.inputs.display-version }}"
 
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Git config
         run: |
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: get current version
         run: |
-            echo "Getting current version"
-            export CURRENT_VERSION=`cat ./browser-portable/latest.json | jq -r ".[].version" | head -1`
-            echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+          echo "Getting current version"
+          export CURRENT_VERSION=`cat ./browser-portable/latest.json | jq -r ".[].version" | head -1`
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
 
-            if [[ "$CURRENT_VERSION" == "null" ]]; then
-              false
-            fi
+          if [[ "$CURRENT_VERSION" == "null" ]]; then
+            false
+          fi
     
       - name: Update latest.json
         run: |
-            echo "Updating latest.json"
-            echo "new version: ${{ github.event.inputs.display-version }}"
-            echo "current version: ${{ env.CURRENT_VERSION }}"
-            sed -i 's/${{ env.CURRENT_VERSION }}/${{ github.event.inputs.display-version }}/g' ./browser-portable/latest.json
+          echo "Updating latest.json"
+          echo "new version: ${{ github.event.inputs.display-version }}"
+          echo "current version: ${{ env.CURRENT_VERSION }}"
+          sed -i 's/${{ env.CURRENT_VERSION }}/${{ github.event.inputs.display-version }}/g' ./browser-portable/latest.json
 
       - name: Commit
         run: |
-            git add .
-            git commit -m "Update Floorp Portable version"
-            git push
+          git add .
+          git commit -m "Update Floorp Portable version"
+          git push
 
       - name: Waiting 10 seconds...
-          run: |
-            sleep 10
+        run: |
+          sleep 10
 
       - uses: ./.github/workflows/upload.yml
