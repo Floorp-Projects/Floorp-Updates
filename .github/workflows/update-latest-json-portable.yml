@@ -54,4 +54,5 @@ jobs:
         run: |
           sleep 10
 
-      - uses: ./.github/workflows/upload.yml
+  upload:
+    uses: ./.github/workflows/upload.yml
