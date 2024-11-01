@@ -47,7 +47,7 @@ jobs:
       - name: Commit
         run: |
           git add .
-          git commit -m "Update Floorp Portable version" --allow-empty
+          git commit -m "Update Floorp Portable version"
           git push
 
       - name: Waiting 10 seconds...
