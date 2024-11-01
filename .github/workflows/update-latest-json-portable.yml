@@ -55,4 +55,5 @@ jobs:
           sleep 10
 
   upload:
+    needs: ["update-latest-json"]
     uses: ./.github/workflows/upload.yml
