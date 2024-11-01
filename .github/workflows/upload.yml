@@ -2,7 +2,14 @@ on:
   push:
     branches: main
   workflow_call:
-   
+    secrets:
+      FTP_ADDR:
+        required: true
+      FTP_USER:
+        required: true
+      FTP_PASS:
+        required: true
+
 name: Upload
 jobs:
   upload:
