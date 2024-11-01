@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-name: Update latest.json and current_version.txt
+name: Update Floorp-Portable version
 on:
    workflow_dispatch:
       inputs:
@@ -21,34 +21,37 @@ jobs:
 
        - name: Checkout
          uses: actions/checkout@v2
-         with:
-          token: ${{ secrets.PAT }} 
 
        - name: Git config
          run: |
-            git config --global user.name "Ryosuke Asano"
-            git config --global user.email "ryosukeusuusu@gmail.com"
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
        - name: get current version
          run: |
             echo "Getting current version"
-            export CURRENT_VERSION=`cat ./current_version.txt`
+            export CURRENT_VERSION=`cat ./browser-portable/latest.json | jq -r ".[].version" | head -1`
             echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+
+            if [[ "$CURRENT_VERSION" == "null" ]]; then
+              false
+            fi
     
        - name: Update latest.json
          run: |
             echo "Updating latest.json"
             echo "new version: ${{ github.event.inputs.display-version }}"
             echo "current version: ${{ env.CURRENT_VERSION }}"
-            sed -i 's/${{ env.CURRENT_VERSION }}/${{ github.event.inputs.display-version }}/g' browser/latest.json
-
-       - name: Update current_version.txt
-         run: |
-            echo "Updating current_version.txt"
-            echo "${{ github.event.inputs.display-version }}" > current_version.txt
+            sed -i 's/${{ env.CURRENT_VERSION }}/${{ github.event.inputs.display-version }}/g' ./browser-portable/latest.json
 
        - name: Commit
          run: |
             git add .
-            git commit -m "Update latest.json and current_version.txt"
+            git commit -m "Update Floorp Portable version"
             git push
+
+        - name: Waiting 10 seconds...
+          run: |
+            sleep 10
+
+        - uses: ./.github/workflows/upload.yml
