@@ -57,3 +57,7 @@ jobs:
   upload:
     needs: ["update-latest-json"]
     uses: ./.github/workflows/upload.yml
+    secrets:
+      FTP_ADDR: ${{ secrets.FTP_ADDR }}
+      FTP_USER: ${{ secrets.FTP_USER }}
+      FTP_PASS: ${{ secrets.FTP_PASS }}
