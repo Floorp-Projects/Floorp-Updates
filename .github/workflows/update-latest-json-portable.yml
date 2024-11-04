@@ -50,9 +50,9 @@ jobs:
           git commit -m "Update Floorp Portable version"
           git push
 
-      - name: Waiting 10 seconds...
+      - name: Waiting 5 seconds...
         run: |
-          sleep 10
+          sleep 5
 
   upload:
     needs: ["update-latest-json"]
