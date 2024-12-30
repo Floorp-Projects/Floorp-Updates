@@ -30,12 +30,12 @@ jobs:
       - name: Get download url
         run: |
           export WIN_X86_64_DOWNLOAD_URL="https://github.com/Floorp-Projects/Floorp-Portable/releases/download/${{ github.event.inputs.display-version }}-portable/floorp-${{ github.event.inputs.display-version }}-portable-windows-x86_64.zip"
-          export LINUX_X86_64_DOWNLOAD_URL="https://github.com/Floorp-Projects/Floorp-Portable/releases/download/${{ github.event.inputs.display-version }}-portable/floorp-${{ github.event.inputs.display-version }}-portable-linux-x86_64.zip"
-          export LINUX_AARCH64_DOWNLOAD_URL="https://github.com/Floorp-Projects/Floorp-Portable/releases/download/${{ github.event.inputs.display-version }}-portable/floorp-${{ github.event.inputs.display-version }}-portable-linux-aarch64.zip"
+          export LINUX_X86_64_DOWNLOAD_URL="https://github.com/Floorp-Projects/Floorp-Portable/releases/download/${{ github.event.inputs.display-version }}-portable/floorp-${{ github.event.inputs.display-version }}-portable-linux-x86_64.tar.zst"
+          export LINUX_AARCH64_DOWNLOAD_URL="https://github.com/Floorp-Projects/Floorp-Portable/releases/download/${{ github.event.inputs.display-version }}-portable/floorp-${{ github.event.inputs.display-version }}-portable-linux-aarch64.tar.zst"
 
-          echo "WIN_X86_64_DOWNLOAD_URL=\"$WIN_X86_64_DOWNLOAD_URL\"" >> $GITHUB_ENV
-          echo "LINUX_X86_64_DOWNLOAD_URL=\"$LINUX_X86_64_DOWNLOAD_URL\"" >> $GITHUB_ENV
-          echo "LINUX_AARCH64_DOWNLOAD_URL=\"$LINUX_AARCH64_DOWNLOAD_URL\"" >> $GITHUB_ENV
+          echo "WIN_X86_64_DOWNLOAD_URL=$WIN_X86_64_DOWNLOAD_URL" >> $GITHUB_ENV
+          echo "LINUX_X86_64_DOWNLOAD_URL=$LINUX_X86_64_DOWNLOAD_URL" >> $GITHUB_ENV
+          echo "LINUX_AARCH64_DOWNLOAD_URL=$LINUX_AARCH64_DOWNLOAD_URL" >> $GITHUB_ENV
 
       - name: Get sha256 hash
         run: |
@@ -58,24 +58,24 @@ jobs:
       - name: Set win-x86-64 version
         run: |
           cd ./browser-portable
-          jq '."win-x86-64".version|="${{ github.event.inputs.display-version }}"' ./latest.json > ./latest.json
-          jq '."win-x86-64".url|="${{ env.WIN_X86_64_DOWNLOAD_URL }}"' ./latest.json > ./latest.json
-          jq '."win-x86-64".sha256|="${{ env.WIN_X86_64_SHA256 }}"' ./latest.json > ./latest.json
+          cat ./latest.json | jq '."win-x86-64".version|="${{ github.event.inputs.display-version }}"' | tee ./latest.json
+          cat ./latest.json | jq '."win-x86-64".url|="${{ env.WIN_X86_64_DOWNLOAD_URL }}"' | tee ./latest.json
+          cat ./latest.json | jq '."win-x86-64".sha256|="${{ env.WIN_X86_64_SHA256 }}"' | tee ./latest.json
 
 #      - name: Set linux-x86-64 version
 #        run: |
 #          cd ./browser-portable
-#          jq '."linux-x86-64".version|="${{ github.event.inputs.display-version }}"' ./latest.json > ./latest.json
-#          jq '."linux-x86-64".url|="${{ env.LINUX_X86_64_DOWNLOAD_URL }}"' ./latest.json > ./latest.json
-#          jq '."linux-x86-64".sha256|="${{ env.LINUX_X86_64_SHA256 }}"' ./latest.json > ./latest.json
+#          cat ./latest.json | jq '."linux-x86-64".version|="${{ github.event.inputs.display-version }}"' | tee ./latest.json
+#          cat ./latest.json | jq '."linux-x86-64".url|="${{ env.LINUX_X86_64_DOWNLOAD_URL }}"' | tee ./latest.json
+#          cat ./latest.json | jq '."linux-x86-64".sha256|="${{ env.LINUX_X86_64_SHA256 }}"' | tee ./latest.json
 
 #      - name: Set linux-aarch64 version
 #        run: |
 #          cd ./browser-portable
 #          # Why "arm"?, see: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/PlatformArch
-#          jq '."linux-arm".version|="${{ github.event.inputs.display-version }}"' ./latest.json > ./latest.json
-#          jq '."linux-arm".url|="${{ env.LINUX_AARCH64_DOWNLOAD_URL }}"' ./latest.json > ./latest.json
-#          jq '."linux-arm".sha256|="${{ env.LINUX_AARCH64_SHA256 }}"' ./latest.json > ./latest.json
+#          cat ./latest.json | jq '."linux-arm".version|="${{ github.event.inputs.display-version }}"' | tee ./latest.json
+#          cat ./latest.json | jq '."linux-arm".url|="${{ env.LINUX_AARCH64_DOWNLOAD_URL }}"' | tee ./latest.json
+#          cat ./latest.json | jq '."linux-arm".sha256|="${{ env.LINUX_AARCH64_SHA256 }}"' | tee ./latest.json
 
       - name: Commit
         run: |
@@ -88,6 +88,7 @@ jobs:
           sleep 5
 
   upload:
+    if: ${{ github.ref == 'refs/heads/main' }}
     needs: ["update-latest-json"]
     uses: ./.github/workflows/upload.yml
     secrets:
