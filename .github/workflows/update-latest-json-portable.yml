@@ -27,26 +27,58 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: get current version
+      - name: Get download url
         run: |
-          echo "Getting current version"
-          export CURRENT_VERSION=`cat ./browser-portable/latest.json | jq -r ".[].version" | head -1`
-          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+          export WIN_X86_64_DOWNLOAD_URL="https://github.com/Floorp-Projects/Floorp-Portable/releases/download/${{ github.event.inputs.display-version }}-portable/floorp-${{ github.event.inputs.display-version }}-portable-windows-x86_64.zip"
+          export LINUX_X86_64_DOWNLOAD_URL="https://github.com/Floorp-Projects/Floorp-Portable/releases/download/${{ github.event.inputs.display-version }}-portable/floorp-${{ github.event.inputs.display-version }}-portable-linux-x86_64.zip"
+          export LINUX_AARCH64_DOWNLOAD_URL="https://github.com/Floorp-Projects/Floorp-Portable/releases/download/${{ github.event.inputs.display-version }}-portable/floorp-${{ github.event.inputs.display-version }}-portable-linux-aarch64.zip"
 
-          if [[ "$CURRENT_VERSION" == "null" ]]; then
-            false
-          fi
-    
-      - name: Update latest.json
+          echo "WIN_X86_64_DOWNLOAD_URL=\"$WIN_X86_64_DOWNLOAD_URL\"" >> $GITHUB_ENV
+          echo "LINUX_X86_64_DOWNLOAD_URL=\"$LINUX_X86_64_DOWNLOAD_URL\"" >> $GITHUB_ENV
+          echo "LINUX_AARCH64_DOWNLOAD_URL=\"$LINUX_AARCH64_DOWNLOAD_URL\"" >> $GITHUB_ENV
+
+      - name: Get sha256 hash
+          curl -f -L -o win-x86-64 "${{ env.WIN_X86_64_DOWNLOAD_URL }}"
+          curl -f -L -o linux-x86-64 "${{ env.LINUX_X86_64_DOWNLOAD_URL }}"
+          curl -f -L -o linux-aarch64 "${{ env.LINUX_AARCH64_DOWNLOAD_URL }}"
+
+          export WIN_X86_64_SHA256=`cat win-x86-64 | sha256sum | awk '{print $1}'`
+          export LINUX_X86_64_SHA256=`cat linux-x86-64 | sha256sum | awk '{print $1}'`
+          export LINUX_AARCH64_SHA256=`cat linux-aarch64 | sha256sum | awk '{print $1}'`
+
+          echo "WIN_X86_64_SHA256=$WIN_X86_64_SHA256" >> $GITHUB_ENV
+          echo "LINUX_X86_64_SHA256=$LINUX_X86_64_SHA256" >> $GITHUB_ENV
+          echo "LINUX_AARCH64_SHA256=$LINUX_AARCH64_SHA256" >> $GITHUB_ENV
+
+          rm win-x86-64
+          rm linux-x86-64
+          rm linux-aarch64
+
+      - name: Set win-x86-64 version
         run: |
-          echo "Updating latest.json"
-          echo "new version: ${{ github.event.inputs.display-version }}"
-          echo "current version: ${{ env.CURRENT_VERSION }}"
-          sed -i 's/${{ env.CURRENT_VERSION }}/${{ github.event.inputs.display-version }}/g' ./browser-portable/latest.json
+          cd ./browser-portable
+          jq '."win-x86-64".version|="${{ github.event.inputs.display-version }}"' ./latest.json > ./latest.json
+          jq '."win-x86-64".url|="${{ env.WIN_X86_64_DOWNLOAD_URL }}"' ./latest.json > ./latest.json
+          jq '."win-x86-64".sha256|="${{ env.WIN_X86_64_SHA256 }}"' ./latest.json > ./latest.json
+
+#      - name: Set linux-x86-64 version
+#        run: |
+#          cd ./browser-portable
+#          jq '."linux-x86-64".version|="${{ github.event.inputs.display-version }}"' ./latest.json > ./latest.json
+#          jq '."linux-x86-64".url|="${{ env.LINUX_X86_64_DOWNLOAD_URL }}"' ./latest.json > ./latest.json
+#          jq '."linux-x86-64".sha256|="${{ env.LINUX_X86_64_SHA256 }}"' ./latest.json > ./latest.json
+
+#      - name: Set linux-aarch64 version
+#        run: |
+#          cd ./browser-portable
+#          # Why "arm"?, see: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/PlatformArch
+#          jq '."linux-arm".version|="${{ github.event.inputs.display-version }}"' ./latest.json > ./latest.json
+#          jq '."linux-arm".url|="${{ env.LINUX_AARCH64_DOWNLOAD_URL }}"' ./latest.json > ./latest.json
+#          jq '."linux-arm".sha256|="${{ env.LINUX_AARCH64_SHA256 }}"' ./latest.json > ./latest.json
 
       - name: Commit
         run: |
-          git add .
+          git add ./browser-portable/latest.json
           git commit -m "Update Floorp Portable version"
           git push
 
