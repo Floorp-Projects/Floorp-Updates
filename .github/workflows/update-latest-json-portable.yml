@@ -38,6 +38,7 @@ jobs:
           echo "LINUX_AARCH64_DOWNLOAD_URL=\"$LINUX_AARCH64_DOWNLOAD_URL\"" >> $GITHUB_ENV
 
       - name: Get sha256 hash
+        run: |
           curl -f -L -o win-x86-64 "${{ env.WIN_X86_64_DOWNLOAD_URL }}"
           curl -f -L -o linux-x86-64 "${{ env.LINUX_X86_64_DOWNLOAD_URL }}"
           curl -f -L -o linux-aarch64 "${{ env.LINUX_AARCH64_DOWNLOAD_URL }}"
