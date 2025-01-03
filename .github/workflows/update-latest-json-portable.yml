@@ -72,10 +72,9 @@ jobs:
 #      - name: Set linux-aarch64 version
 #        run: |
 #          cd ./browser-portable
-#          # Why "arm"?, see: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/PlatformArch
-#          cat ./latest.json | jq '."linux-arm".version|="${{ github.event.inputs.display-version }}"' | tee ./latest.json
-#          cat ./latest.json | jq '."linux-arm".url|="${{ env.LINUX_AARCH64_DOWNLOAD_URL }}"' | tee ./latest.json
-#          cat ./latest.json | jq '."linux-arm".sha256|="${{ env.LINUX_AARCH64_SHA256 }}"' | tee ./latest.json
+#          cat ./latest.json | jq '."linux-arm64".version|="${{ github.event.inputs.display-version }}"' | tee ./latest.json
+#          cat ./latest.json | jq '."linux-arm64".url|="${{ env.LINUX_AARCH64_DOWNLOAD_URL }}"' | tee ./latest.json
+#          cat ./latest.json | jq '."linux-arm64".sha256|="${{ env.LINUX_AARCH64_SHA256 }}"' | tee ./latest.json
 
       - name: Commit
         run: |
