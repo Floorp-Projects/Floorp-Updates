@@ -10,6 +10,10 @@ on:
       FTP_PASS:
         required: true
 
+concurrency:
+  group: upload
+  cancel-in-progress: false
+
 name: Upload
 jobs:
   upload:
@@ -17,7 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Git Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+      with:
+        ref: main
 
     - name: Upload files
       uses: SamKirkland/FTP-Deploy-Action@4.3.2
