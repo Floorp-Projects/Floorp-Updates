@@ -2,16 +2,16 @@
   <updates>
     <update
       type="minor"
-      displayVersion="11.22.0"
-      appVersion="128.7.0"
-      platformVersion="128.7.0"
-      buildID="20250126090343"
+      displayVersion="11.23.0"
+      appVersion="128.8.0"
+      platformVersion="128.8.0"
+      buildID="20250214120002"
       detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/"
     >
     <patch
       type="complete"
       URL="https://github.com/Floorp-Projects/Floorp/releases/download/beta/LINUX-x86_64.mar"
-      size="93662297"
+      size="93698537"
     />
   </update>
 </updates>
