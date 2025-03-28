@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-<update type="minor" displayVersion="11.24.0" appVersion="128.9" platformVersion="128.9" buildID="20250304075823" detailsURL="https://blog.ablaze.one/4706/2025-03-21/">
-<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.24.0/LINUX-aarch64.mar" size="85197766"/>
+<update type="minor" displayVersion="11.25.0" appVersion="128.9" platformVersion="128.9" buildID="20250328044634" detailsURL="https://blog.ablaze.one/4715/2025-03-20/">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.25.0/LINUX-aarch64.mar" size="85205734"/>
 </update>
 </updates>
