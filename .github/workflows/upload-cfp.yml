@@ -17,4 +17,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: |
-            pages deploy . --project-name=updates --branch=main
+            pages deploy . --project-name=floorp-updates --branch=main
