@@ -1,7 +1,7 @@
 {
   "win-x86-64": {
-    "version": "11.26.0",
+    "version": "11.26.1",
     "url": "https://github.com/Floorp-Projects/Floorp-Portable/releases/download/11.26.1-portable/floorp-11.26.1-portable-windows-x86_64.zip",
-    "sha256": "c93ed5fa7e99334e2f44a8b1685a54d15bfa95497aafd817bec6b76e030c6789"
+    "sha256": "37a1138a628f0cbd50757600cfe81f285d3a4a2957152e3513b4be7bdcd8b9fa"
   }
 }
