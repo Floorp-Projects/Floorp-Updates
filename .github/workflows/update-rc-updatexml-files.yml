@@ -38,17 +38,17 @@ jobs:
 
       - name: move update.xml
         run: |
-          mkdir -p ./browser/beta/WINNT/x86_64/
-          mv WINNT-x86_64.xml ./browser/beta/WINNT/x86_64/update.xml
+          mkdir -p ./browser/rc/WINNT/x86_64/
+          mv WINNT-x86_64.xml ./browser/rc/WINNT/x86_64/update.xml
 
-          mkdir -p ./browser/beta/Linux/x86_64/
-          mv LINUX-x86_64.xml ./browser/beta/Linux/x86_64/update.xml
+          mkdir -p ./browser/rc/Linux/x86_64/
+          mv LINUX-x86_64.xml ./browser/rc/Linux/x86_64/update.xml
 
-          mkdir -p ./browser/beta/Darwin/x86_64/
-          cp DARWIN-Universal.xml ./browser/beta/Darwin/x86_64/update.xml
+          mkdir -p ./browser/rc/Darwin/x86_64/
+          cp DARWIN-Universal.xml ./browser/rc/Darwin/x86_64/update.xml
 
-          mkdir -p ./browser/beta/Darwin/aarch64/
-          mv DARWIN-Universal.xml ./browser/beta/Darwin/aarch64/update.xml
+          mkdir -p ./browser/rc/Darwin/aarch64/
+          mv DARWIN-Universal.xml ./browser/rc/Darwin/aarch64/update.xml
 
       - name: Replace update.xml
         run: |
