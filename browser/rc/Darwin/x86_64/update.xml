@@ -1,1 +1,6 @@
-Not Found
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+    <update type="minor" displayVersion="139.0@12.0.0" appVersion="139.0" platformVersion="139.0" buildID="20250523093636" appVersion2="12.0.0" buildID2="0196fe31-32f8-75de-975a-bd9f3d4bbba6" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
+        <patch type="complete" URL="http://github.com/Floorp-Projects/Floorp/releases/download/beta/floorp-mac-universal-full.mar" size="130327033"/>
+    </update>
+</updates>

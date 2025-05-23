@@ -1,1 +1,6 @@
-Not Found
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+    <update type="minor" displayVersion="139.0@12.0.0" appVersion="139.0" platformVersion="139.0" buildID="20250523115025" appVersion2="12.0.0" buildID2="0196fe31-341a-77c6-8a60-0706ba57dc53" detailsURL="https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/">
+        <patch type="complete" URL="http://github.com/Floorp-Projects/Floorp/releases/download/beta/floorp-win-amd64-full.mar" size="86363665"/>
+    </update>
+</updates>
