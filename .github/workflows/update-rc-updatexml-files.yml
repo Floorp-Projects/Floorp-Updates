@@ -1,0 +1,58 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+name: Replace RC update.xml for Windows, macOS and Linux
+on:
+  workflow_dispatch:
+    inputs:
+      win-x86_64-update-xml:
+        description: "Windows x86_64 update.xml url"
+        required: true
+      linux-x86_64-update-xml:
+        description: "Linux x86_64 update.xml url"
+        required: true
+      macOS-Universal-update-xml:
+        description: "macOS Universal update.xml url"
+        required: true
+jobs:
+  replace:
+    name: Replace RC update.xml for Windows, macOS and Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT }}
+      - name: download update.xml
+        # Donloaded file name is fixed vanila name
+        run: |
+          curl -L -o WINNT-x86_64.xml ${{ github.event.inputs.win-x86_64-update-xml }}
+          curl -L -o LINUX-x86_64.xml ${{ github.event.inputs.linux-x86_64-update-xml }}
+          curl -L -o DARWIN-Universal.xml ${{ github.event.inputs.macOS-Universal-update-xml }}
+
+      - name: config git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: move update.xml
+        run: |
+          mkdir -p ./browser/beta/WINNT/x86_64/
+          mv WINNT-x86_64.xml ./browser/beta/WINNT/x86_64/update.xml
+
+          mkdir -p ./browser/beta/Linux/x86_64/
+          mv LINUX-x86_64.xml ./browser/beta/Linux/x86_64/update.xml
+
+          mkdir -p ./browser/beta/Darwin/x86_64/
+          cp DARWIN-Universal.xml ./browser/beta/Darwin/x86_64/update.xml
+
+          mkdir -p ./browser/beta/Darwin/aarch64/
+          mv DARWIN-Universal.xml ./browser/beta/Darwin/aarch64/update.xml
+
+      - name: Replace update.xml
+        run: |
+          git add .
+          git commit -m "Update Floorp 12 RC Build"
+          git pull -r
+          git push origin

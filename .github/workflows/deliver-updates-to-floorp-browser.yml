@@ -8,17 +8,17 @@ on:
       os:
         type: choice
         options:
-        - WINNT
-        - Linux
-        - Darwin
+          - WINNT
+          - Linux
+          - Darwin
         required: true
         description: OS
       arch:
         type: choice
         options:
-        - x86_64
-        - x86
-        - aarch64
+          - x86_64
+          - x86
+          - aarch64
         required: true
         description: Architecture
       buildid:
@@ -52,12 +52,12 @@ jobs:
           echo Architecture: ${{ inputs.arch }}
 
           echo "TARGET_OS=${{ inputs.os }}" >> $GITHUB_ENV
- 
+
       - name: Clone
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.PAT }}
-        
+
       - name: Calculate mar file size
         run: |
           mkdir ~/update_tmpfiles
@@ -145,7 +145,7 @@ jobs:
               fi
             fi
           done
-          
+
           mkdir -p systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}
           cp ~/update_tmpfiles/update_addon.xml systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/update.xml
 
