@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-    <update type="minor" displayVersion="139.0@12.0.0" appVersion="139.0" platformVersion="139.0" buildID="20250523094114" appVersion2="12.0.0" buildID2="0196fe59-4765-744f-97d4-629f21f076b7" detailsURL="https://blog.floorp.app/">
-        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.0.0-rc/floorp-linux-amd64-full.mar" size="83302585"/>
+    <update type="minor" displayVersion="139.0@12.0.1" appVersion="139.0" platformVersion="139.0" buildID="20250523183711" appVersion2="12.0.1" buildID2="0197079a-0868-704b-9b7d-b325e99c5eb2" detailsURL="https://blog.floorp.app/ja/release/12.0.0-RC1.html">
+        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.0.0-rc/floorp-linux-amd64-full.mar" size="83301469"/>
     </update>
 </updates>
