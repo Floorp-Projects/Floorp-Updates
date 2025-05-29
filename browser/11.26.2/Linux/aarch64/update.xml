@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
+<update type="minor" displayVersion="11.27.0" appVersion="128.12" platformVersion="128.12" buildID="20250529043227" detailsURL="https://blog.floorp.app/release/11.27.0.html">
+<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.27.0/LINUX-aarch64.mar" size="85307094"/>
+</update>
 </updates>
