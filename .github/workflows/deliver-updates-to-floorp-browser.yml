@@ -54,7 +54,7 @@ jobs:
           echo "TARGET_OS=${{ inputs.os }}" >> $GITHUB_ENV
 
       - name: Clone
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
 
@@ -154,5 +154,10 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "A new version of Floorp Browser has been released!"
+          if git diff --cached --quiet; then
+            echo "🛈 変更がないためコミットをスキップします。"
+            exit 0
+          fi
+          git commit -m "A new version of Floorp Browser has been released! (${{ env.DISPLAY_VERSION }} - ${{ inputs.os }} ${{ inputs.arch }})"
+          git pull -r
           git push origin
