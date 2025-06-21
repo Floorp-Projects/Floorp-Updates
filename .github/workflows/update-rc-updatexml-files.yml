@@ -107,7 +107,8 @@ jobs:
 
       - name: Generate macOS env
         run: |
-          echo "MAC_SIZE=$(wget -nv '${{ inputs.mac-mar-url }}' -O ~/update_tmpfiles/mac-file.mar && stat -c%s ~/update_tmpfiles/mac-file.mar)" >> $GITHUB_ENV
+          wget -nv '${{ inputs.mac-mar-url }}' -O ~/update_tmpfiles/mac-file.mar
+          echo "MAC_SIZE=$(stat -c%s ~/update_tmpfiles/mac-file.mar)" >> $GITHUB_ENV
           echo "MAC_BUILDID=${{ inputs.mac-buildid }}" >> $GITHUB_ENV
           echo "MAC_FIREFOX_VERSION=${{ inputs.mac-firefox-version }}" >> $GITHUB_ENV
 
