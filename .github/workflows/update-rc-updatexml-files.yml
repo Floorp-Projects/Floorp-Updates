@@ -89,8 +89,6 @@ jobs:
 
             # extract application.ini & omni.ja
             ~/update_tmpfiles/mar-tools/mar -x file.mar
-            cp application.ini application.ini.xz
-            xz -d application.ini.xz
             mkdir omni_tmp
             unzip -q -d omni_tmp omni.ja || true
             cp omni_tmp/modules/AppConstants.* AppConstants.jsfile
