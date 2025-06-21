@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
   <update type="minor" displayVersion="12.0.4" appVersion="139.0.5" platformVersion="139.0.5" buildID="20250620041142" detailsURL="https://blog.floorp.app/release/12.0.4">
-    <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.0.4/floorp-win-amd64-full.mar" size="86866325"/>
+    <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.0.4/floorp-win-amd64-full.mar" size="86866993"/>
   </update>
 </updates>
