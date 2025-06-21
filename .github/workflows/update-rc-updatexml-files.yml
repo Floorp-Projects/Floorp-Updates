@@ -110,7 +110,7 @@ jobs:
           wget -nv '${{ inputs.mac-mar-url }}' -O ~/update_tmpfiles/mac-file.mar
           echo "MAC_SIZE=$(stat -c%s ~/update_tmpfiles/mac-file.mar)" >> $GITHUB_ENV
           echo "MAC_BUILDID=${{ inputs.mac-buildid }}" >> $GITHUB_ENV
-          echo "MAC_FIREFOX_VERSION=${{ inputs.mac-firefox-version }}" >> $GITHUB_ENV
+          echo "FIREFOX_VERSION=${{ inputs.mac-firefox-version }}" >> $GITHUB_ENV
 
       - name: Create update.xml files
         run: |
@@ -120,8 +120,7 @@ jobs:
             local ARCH=$2
             local SIZE=$3
             local BUILDID=$4
-            local FIREFOX_VERSION=$5
-            local MAR_URL=$6
+            local MAR_URL=$5
 
             update_xml=(
             '<?xml version="1.0" encoding="UTF-8"?>'
@@ -136,10 +135,10 @@ jobs:
             for line in "${update_xml[@]}"; do echo "$line" >> browser/rc/${OS}/${ARCH}/update.xml ; done
           }
 
-          make_xml WINNT x86_64 $WIN_SIZE $WIN_BUILDID $WIN_FIREFOX_VERSION '${{ inputs.win-mar-url }}'
-          make_xml Linux x86_64 $LINUX_SIZE $LINUX_BUILDID $LINUX_FIREFOX_VERSION '${{ inputs.linux-mar-url }}'
-          make_xml Darwin x86_64 $MAC_SIZE $MAC_BUILDID $MAC_FIREFOX_VERSION '${{ inputs.mac-mar-url }}'
-          make_xml Darwin aarch64 $MAC_SIZE $MAC_BUILDID $MAC_FIREFOX_VERSION '${{ inputs.mac-mar-url }}'
+          make_xml WINNT x86_64 $WIN_SIZE $WIN_BUILDID $FIREFOX_VERSION '${{ inputs.win-mar-url }}'
+          make_xml Linux x86_64 $LINUX_SIZE $LINUX_BUILDID $FIREFOX_VERSION '${{ inputs.linux-mar-url }}'
+          make_xml Darwin x86_64 $MAC_SIZE $MAC_BUILDID $FIREFOX_VERSION '${{ inputs.mac-mar-url }}'
+          make_xml Darwin aarch64 $MAC_SIZE $MAC_BUILDID $FIREFOX_VERSION '${{ inputs.mac-mar-url }}'
 
       - name: Commit and push
         run: |
