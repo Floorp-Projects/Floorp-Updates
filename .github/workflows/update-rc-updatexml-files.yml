@@ -18,11 +18,11 @@ on:
         type: string
         required: true
         description: macOS Universal complete MAR file URL
-      mac-buildid:
+      buildid:
         type: string
         required: true
         description: BuildID of macOS build
-      mac-firefox-version:
+      firefox-version:
         type: string
         required: true
         description: Firefox version for macOS build (e.g. 124.0)
@@ -50,8 +50,8 @@ jobs:
           echo Linux   MAR : ${{ inputs.linux-mar-url }}
           echo macOS   MAR : ${{ inputs.mac-mar-url }}
           echo Display Version : $DISPLAY_VERSION
-          echo macOS BuildID   : ${{ inputs.mac-buildid }}
-          echo macOS Fx Ver    : ${{ inputs.mac-firefox-version }}
+          echo BuildID   : ${{ inputs.buildid }}
+          echo Firefox Ver    : ${{ inputs.firefox-version }}
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -60,12 +60,6 @@ jobs:
 
       - name: Prepare workspace
         run: mkdir -p ~/update_tmpfiles
-
-      - name: Download MAR tools
-        run: |
-          cd ~/update_tmpfiles
-          wget -nv https://firefox-ci-tc.services.mozilla.com/api/index/v1/task/gecko.cache.level-3.toolchains.v3.linux64-mar-tools.latest/artifacts/public%2Fbuild%2Fmar-tools.tar.zst -O mar-tools.tar.zst
-          tar -xvf mar-tools.tar.zst
 
       - name: Process Windows & Linux MAR
         run: |
@@ -86,20 +80,6 @@ jobs:
             local SIZE
             SIZE=$(stat -c%s "file.mar")
             echo "${OUT_ENV_PREFIX}_SIZE=$SIZE" >> $GITHUB_ENV
-
-            # extract application.ini & omni.ja
-            ~/update_tmpfiles/mar-tools/mar -x file.mar
-            mkdir omni_tmp
-            unzip -q -d omni_tmp omni.ja || true
-            cp omni_tmp/modules/AppConstants.* AppConstants.jsfile || true
-
-            local BUILDID
-            BUILDID=$(grep "^BuildID=" application.ini | cut -d= -f2)
-            echo "${OUT_ENV_PREFIX}_BUILDID=$BUILDID" >> $GITHUB_ENV
-
-            local FIREFOX_VERSION
-            FIREFOX_VERSION=$(grep "^Version=" application.ini | cut -d= -f2 | sed "s/\.0$//")
-            echo "${OUT_ENV_PREFIX}_FIREFOX_VERSION=$FIREFOX_VERSION" >> $GITHUB_ENV
           }
 
           process WINNT x86_64 '${{ inputs.win-mar-url }}' WIN
@@ -109,8 +89,8 @@ jobs:
         run: |
           wget -nv '${{ inputs.mac-mar-url }}' -O ~/update_tmpfiles/mac-file.mar
           echo "MAC_SIZE=$(stat -c%s ~/update_tmpfiles/mac-file.mar)" >> $GITHUB_ENV
-          echo "BUILDID=${{ inputs.mac-buildid }}" >> $GITHUB_ENV
-          echo "FIREFOX_VERSION=${{ inputs.mac-firefox-version }}" >> $GITHUB_ENV
+          echo "BUILDID=${{ inputs.buildid }}" >> $GITHUB_ENV
+          echo "FIREFOX_VERSION=${{ inputs.firefox-version }}" >> $GITHUB_ENV
 
       - name: Create update.xml files
         run: |
