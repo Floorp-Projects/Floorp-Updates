@@ -21,15 +21,19 @@ on:
       buildid:
         type: string
         required: true
-        description: BuildID of macOS build
+        description: BuildID of Firefox build
+      buildid2:
+        type: string
+        required: true
+        description: BuildID of build
       firefox-version:
         type: string
         required: true
-        description: Firefox version for macOS build (e.g. 124.0)
-      display-version:
+        description: Firefox version (e.g. 124.0)
+      app-version2:
         type: string
         required: true
-        description: Display version (e.g. 12.0.4)
+        description: App version 2 (e.g. 12.0.0)
       release-note-url:
         type: string
         default: https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/
@@ -41,16 +45,17 @@ jobs:
     runs-on: ubuntu-22.04
 
     env:
-      DISPLAY_VERSION: ${{ inputs.display-version }}
       RELEASE_NOTE_URL: ${{ inputs.release-note-url }}
+      APP_VERSION2: ${{ inputs.app-version2 }}
     steps:
       - name: Show parameters
         run: |
           echo Windows MAR : ${{ inputs.win-mar-url }}
           echo Linux   MAR : ${{ inputs.linux-mar-url }}
           echo macOS   MAR : ${{ inputs.mac-mar-url }}
-          echo Display Version : $DISPLAY_VERSION
+          echo App Version 2 : $APP_VERSION2
           echo BuildID   : ${{ inputs.buildid }}
+          echo BuildID2  : ${{ inputs.buildid2 }}
           echo Firefox Ver    : ${{ inputs.firefox-version }}
 
       - name: Checkout repository
@@ -90,6 +95,7 @@ jobs:
           wget -nv '${{ inputs.mac-mar-url }}' -O ~/update_tmpfiles/mac-file.mar
           echo "MAC_SIZE=$(stat -c%s ~/update_tmpfiles/mac-file.mar)" >> $GITHUB_ENV
           echo "BUILDID=${{ inputs.buildid }}" >> $GITHUB_ENV
+          echo "BUILDID2=${{ inputs.buildid2 }}" >> $GITHUB_ENV
           echo "FIREFOX_VERSION=${{ inputs.firefox-version }}" >> $GITHUB_ENV
 
       - name: Create update.xml files
@@ -104,9 +110,9 @@ jobs:
             update_xml=(
             '<?xml version="1.0" encoding="UTF-8"?>'
             '<updates>'
-            "  <update type=\"minor\" displayVersion=\"${DISPLAY_VERSION}\" appVersion=\"${FIREFOX_VERSION}\" platformVersion=\"${FIREFOX_VERSION}\" buildID=\"${BUILDID}\" detailsURL=\"${RELEASE_NOTE_URL}\">"
-            "    <patch type=\"complete\" URL=\"${MAR_URL}\" size=\"${SIZE}\"/>"
-            '  </update>'
+            "    <update type=\"minor\" displayVersion=\"${FIREFOX_VERSION}@${APP_VERSION2}\" appVersion=\"${FIREFOX_VERSION}\" platformVersion=\"${FIREFOX_VERSION}\" buildID=\"${BUILDID}\" appVersion2=\"${APP_VERSION2}\" buildID2=\"${BUILDID2}\" detailsURL=\"${RELEASE_NOTE_URL}\">"
+            "        <patch type=\"complete\" URL=\"${MAR_URL}\" size=\"${SIZE}\"/>"
+            '    </update>'
             '</updates>'
             )
             mkdir -p browser/rc/${OS}/${ARCH}
@@ -128,6 +134,6 @@ jobs:
             echo "🛈 変更がないためコミットをスキップします。"
             exit 0
           fi
-          git commit -m "Update Floorp RC update.xml (${DISPLAY_VERSION})"
+          git commit -m "Update Floorp RC update.xml (${APP_VERSION2})"
           git pull -r
           git push origin
