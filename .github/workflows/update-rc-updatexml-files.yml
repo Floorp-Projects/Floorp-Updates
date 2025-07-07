@@ -18,14 +18,18 @@ on:
         type: string
         required: true
         description: macOS Universal complete MAR file URL
-      buildid:
+      win-meta-url:
         type: string
         required: true
-        description: BuildID of Firefox build
-      buildid2:
+        description: Windows meta.json URL
+      linux-meta-url:
         type: string
         required: true
-        description: BuildID of build
+        description: Linux meta.json URL
+      mac-meta-url:
+        type: string
+        required: true
+        description: macOS meta.json URL
       firefox-version:
         type: string
         required: true
@@ -54,8 +58,6 @@ jobs:
           echo Linux   MAR : ${{ inputs.linux-mar-url }}
           echo macOS   MAR : ${{ inputs.mac-mar-url }}
           echo App Version 2 : $APP_VERSION2
-          echo BuildID   : ${{ inputs.buildid }}
-          echo BuildID2  : ${{ inputs.buildid2 }}
           echo Firefox Ver    : ${{ inputs.firefox-version }}
 
       - name: Checkout repository
@@ -90,12 +92,29 @@ jobs:
           process WINNT x86_64 '${{ inputs.win-mar-url }}' WIN
           process Linux x86_64 '${{ inputs.linux-mar-url }}' LINUX
 
-      - name: Generate macOS env
+      - name: Download and process meta.json files
         run: |
-          wget -nv '${{ inputs.mac-mar-url }}' -O ~/update_tmpfiles/mac-file.mar
-          echo "MAC_SIZE=$(stat -c%s ~/update_tmpfiles/mac-file.mar)" >> $GITHUB_ENV
-          echo "BUILDID=${{ inputs.buildid }}" >> $GITHUB_ENV
-          echo "BUILDID2=${{ inputs.buildid2 }}" >> $GITHUB_ENV
+          set -e
+          cd ~/update_tmpfiles
+
+          # Download macOS MAR file for size calculation
+          wget -nv '${{ inputs.mac-mar-url }}' -O mac-file.mar
+          echo "MAC_SIZE=$(stat -c%s mac-file.mar)" >> $GITHUB_ENV
+
+          # Download meta.json files for each platform
+          wget -nv '${{ inputs.win-meta-url }}' -O win-meta.json
+          wget -nv '${{ inputs.linux-meta-url }}' -O linux-meta.json
+          wget -nv '${{ inputs.mac-meta-url }}' -O mac-meta.json
+
+          # Extract buildid and buildid2 for each platform
+          echo "WIN_BUILDID=$(jq -r '.buildid' win-meta.json)" >> $GITHUB_ENV
+          echo "WIN_BUILDID2=$(jq -r '.noraneko_buildid' win-meta.json)" >> $GITHUB_ENV
+          echo "LINUX_BUILDID=$(jq -r '.buildid' linux-meta.json)" >> $GITHUB_ENV
+          echo "LINUX_BUILDID2=$(jq -r '.noraneko_buildid' linux-meta.json)" >> $GITHUB_ENV
+          echo "MAC_BUILDID=$(jq -r '.buildid' mac-meta.json)" >> $GITHUB_ENV
+          echo "MAC_BUILDID2=$(jq -r '.noraneko_buildid' mac-meta.json)" >> $GITHUB_ENV
+
+          # Set Firefox version
           echo "FIREFOX_VERSION=${{ inputs.firefox-version }}" >> $GITHUB_ENV
 
       - name: Create update.xml files
@@ -106,6 +125,8 @@ jobs:
             local ARCH=$2
             local SIZE=$3
             local MAR_URL=$4
+            local BUILDID=$5
+            local BUILDID2=$6
 
             update_xml=(
             '<?xml version="1.0" encoding="UTF-8"?>'
@@ -120,10 +141,10 @@ jobs:
             for line in "${update_xml[@]}"; do echo "$line" >> browser/rc/${OS}/${ARCH}/update.xml ; done
           }
 
-          make_xml WINNT x86_64 $WIN_SIZE '${{ inputs.win-mar-url }}'
-          make_xml Linux x86_64 $LINUX_SIZE '${{ inputs.linux-mar-url }}'
-          make_xml Darwin x86_64 $MAC_SIZE '${{ inputs.mac-mar-url }}'
-          make_xml Darwin aarch64 $MAC_SIZE '${{ inputs.mac-mar-url }}'
+          make_xml WINNT x86_64 $WIN_SIZE '${{ inputs.win-mar-url }}' $WIN_BUILDID $WIN_BUILDID2
+          make_xml Linux x86_64 $LINUX_SIZE '${{ inputs.linux-mar-url }}' $LINUX_BUILDID $LINUX_BUILDID2
+          make_xml Darwin x86_64 $MAC_SIZE '${{ inputs.mac-mar-url }}' $MAC_BUILDID $MAC_BUILDID2
+          make_xml Darwin aarch64 $MAC_SIZE '${{ inputs.mac-mar-url }}' $MAC_BUILDID $MAC_BUILDID2
 
       - name: Commit and push
         run: |
