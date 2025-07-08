@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-name: Deliver Floorp RC updates
+name: Deliver Floorp Stable updates
 on:
   workflow_dispatch:
     inputs:
@@ -45,7 +45,7 @@ on:
         description: Release Note URL
 
 jobs:
-  deliver-rc-updates:
+  deliver-stable-updates:
     runs-on: ubuntu-22.04
 
     env:
@@ -136,9 +136,9 @@ jobs:
             '    </update>'
             '</updates>'
             )
-            mkdir -p browser/rc/${OS}/${ARCH}
-            : > browser/rc/${OS}/${ARCH}/update.xml
-            for line in "${update_xml[@]}"; do echo "$line" >> browser/rc/${OS}/${ARCH}/update.xml ; done
+            mkdir -p browser/stable/${OS}/${ARCH}
+            : > browser/stable/${OS}/${ARCH}/update.xml
+            for line in "${update_xml[@]}"; do echo "$line" >> browser/stable/${OS}/${ARCH}/update.xml ; done
           }
 
           make_xml WINNT x86_64 $WIN_SIZE '${{ inputs.win-mar-url }}' $WIN_BUILDID $WIN_BUILDID2
@@ -155,6 +155,6 @@ jobs:
             echo "🛈 変更がないためコミットをスキップします。"
             exit 0
           fi
-          git commit -m "Update Floorp RC update.xml (${APP_VERSION2})"
+          git commit -m "Update Floorp Stable update.xml (${APP_VERSION2})"
           git pull -r
           git push origin
