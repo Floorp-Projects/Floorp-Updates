@@ -14,6 +14,10 @@ on:
         type: string
         required: true
         description: Linux x86_64 complete MAR file URL
+      linux-aarch64-mar-url:
+        type: string
+        required: true
+        description: Linux aarch64 complete MAR file URL
       mac-mar-url:
         type: string
         required: true
@@ -25,7 +29,11 @@ on:
       linux-meta-url:
         type: string
         required: true
-        description: Linux meta.json URL
+        description: Linux x86_64 meta.json URL
+      linux-aarch64-meta-url:
+        type: string
+        required: true
+        description: Linux aarch64 meta.json URL
       mac-meta-url:
         type: string
         required: true
@@ -56,6 +64,7 @@ jobs:
         run: |
           echo Windows MAR : ${{ inputs.win-mar-url }}
           echo Linux   MAR : ${{ inputs.linux-mar-url }}
+          echo Linux aarch64 MAR : ${{ inputs.linux-aarch64-mar-url }}
           echo macOS   MAR : ${{ inputs.mac-mar-url }}
           echo App Version 2 : $APP_VERSION2
           echo Firefox Ver    : ${{ inputs.firefox-version }}
@@ -91,6 +100,7 @@ jobs:
 
           process WINNT x86_64 '${{ inputs.win-mar-url }}' WIN
           process Linux x86_64 '${{ inputs.linux-mar-url }}' LINUX
+          process Linux aarch64 '${{ inputs.linux-aarch64-mar-url }}' LINUX_AARCH64
 
       - name: Download and process meta.json files
         run: |
@@ -104,6 +114,7 @@ jobs:
           # Download meta.json files for each platform
           wget -nv '${{ inputs.win-meta-url }}' -O win-meta.json
           wget -nv '${{ inputs.linux-meta-url }}' -O linux-meta.json
+          wget -nv '${{ inputs.linux-aarch64-meta-url }}' -O linux-aarch64-meta.json
           wget -nv '${{ inputs.mac-meta-url }}' -O mac-meta.json
 
           # Extract buildid and buildid2 for each platform
@@ -111,6 +122,8 @@ jobs:
           echo "WIN_BUILDID2=$(jq -r '.noraneko_buildid' win-meta.json)" >> $GITHUB_ENV
           echo "LINUX_BUILDID=$(jq -r '.buildid' linux-meta.json)" >> $GITHUB_ENV
           echo "LINUX_BUILDID2=$(jq -r '.noraneko_buildid' linux-meta.json)" >> $GITHUB_ENV
+          echo "LINUX_AARCH64_BUILDID=$(jq -r '.buildid' linux-aarch64-meta.json)" >> $GITHUB_ENV
+          echo "LINUX_AARCH64_BUILDID2=$(jq -r '.noraneko_buildid' linux-aarch64-meta.json)" >> $GITHUB_ENV
           echo "MAC_BUILDID=$(jq -r '.buildid' mac-meta.json)" >> $GITHUB_ENV
           echo "MAC_BUILDID2=$(jq -r '.noraneko_buildid' mac-meta.json)" >> $GITHUB_ENV
 
@@ -143,6 +156,7 @@ jobs:
 
           make_xml WINNT x86_64 $WIN_SIZE '${{ inputs.win-mar-url }}' $WIN_BUILDID $WIN_BUILDID2
           make_xml Linux x86_64 $LINUX_SIZE '${{ inputs.linux-mar-url }}' $LINUX_BUILDID $LINUX_BUILDID2
+          make_xml Linux aarch64 $LINUX_AARCH64_SIZE '${{ inputs.linux-aarch64-mar-url }}' $LINUX_AARCH64_BUILDID $LINUX_AARCH64_BUILDID2
           make_xml Darwin x86_64 $MAC_SIZE '${{ inputs.mac-mar-url }}' $MAC_BUILDID $MAC_BUILDID2
           make_xml Darwin aarch64 $MAC_SIZE '${{ inputs.mac-mar-url }}' $MAC_BUILDID $MAC_BUILDID2
 
