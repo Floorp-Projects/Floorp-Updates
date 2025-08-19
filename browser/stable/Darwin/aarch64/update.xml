@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+    <update type="minor" displayVersion="142.0@12.1.2" appVersion="142.0" platformVersion="142.0" buildID="20250815053314" appVersion2="12.1.2" buildID2="0198c3f8-fa4c-717a-9974-8797bcb61f7c" detailsURL="https://blog.floorp.app/categories/release/">
+        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.1.2/floorp-mac-universal-full.mar" size="133592961"/>
+    </update>
+</updates>
