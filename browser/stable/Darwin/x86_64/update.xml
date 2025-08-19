@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<updates>
-<update type="minor" displayVersion="11.30.0" appVersion="128.14.0" platformVersion="128.14.0" buildID="" detailsURL="https://blog.floorp.app/release/11.30.0">
-<patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v11.30.0/DARWIN-Universal.mar" size="134896251"/>
-</update>
-</updates>
