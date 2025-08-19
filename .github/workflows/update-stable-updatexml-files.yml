@@ -46,18 +46,13 @@ on:
         type: string
         required: true
         description: App version 2 (e.g. 12.0.0)
-      release-note-url:
-        type: string
-        default: https://blog.ablaze.one/category/ablaze/ablaze-project/floorp/
-        required: false
-        description: Release Note URL
 
 jobs:
   deliver-stable-updates:
     runs-on: ubuntu-22.04
 
     env:
-      RELEASE_NOTE_URL: ${{ inputs.release-note-url }}
+      RELEASE_NOTE_URL: https://blog.floorp.app/categories/release/
       APP_VERSION2: ${{ inputs.app-version2 }}
     steps:
       - name: Show parameters
