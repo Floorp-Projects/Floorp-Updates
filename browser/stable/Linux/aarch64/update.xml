@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+    <update type="minor" displayVersion="144.0.2@12.3.3" appVersion="144.0.2" platformVersion="144.0.2" buildID="20251022135138" appVersion2="12.3.3" buildID2="019a0c95-5674-717e-a3de-fae2ab0b551e" detailsURL="https://blog.floorp.app/categories/release/">
+        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.3.3/floorp-linux-aarch64-full.mar" size="77793828"/>
+    </update>
+</updates>
