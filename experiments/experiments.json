@@ -1,0 +1,24 @@
+{
+    "experiments": [
+        {
+            "id": "example_new_ui",
+            "description": "新しい UI コンポーネントの A/B テスト（control vs variantA）",
+            "salt": "example_new_ui_salt_v1",
+            "rollout": 10,
+            "start": "2025-10-28",
+            "end": "2026-01-01",
+            "variants": [
+                {
+                    "id": "control",
+                    "weight": 70,
+                    "configUrl": ""
+                },
+                {
+                    "id": "variantA",
+                    "weight": 30,
+                    "configUrl": "./configs/variable/new_ui_variantA.json"
+                }
+            ]
+        }
+    ]
+}
