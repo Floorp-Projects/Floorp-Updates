@@ -4,7 +4,7 @@
             "id": "workspace_archive",
             "salt": "workspace_archive_v1_2025",
             "description": "Workspace Archive & Restore 2025 v1",
-            "rollout": 10,
+            "rollout": 50,
             "start": "2025-01-01",
             "end": "2026-12-31",
             "variants": [
