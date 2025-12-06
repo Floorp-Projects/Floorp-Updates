@@ -1,15 +1,16 @@
 {
     "experiments": [
         {
-            "id": "workspace_archive",
-            "salt": "workspace_archive_v1_2025",
-            "description": "Enable Workspace Archive & Restore feature",
-            "rollout": 100,
+            "id": "chrome_web_store_install",
+            "salt": "chrome_web_store_install_v1_2025",
+            "description": "Enable installation of Chrome Web Store extensions",
+            "rollout": 10,
             "start": "2025-01-01",
             "end": "2026-12-31",
             "variants": [
                 {
                     "id": "enabled",
+                    "name": "Enabled",
                     "weight": 100
                 }
             ]
