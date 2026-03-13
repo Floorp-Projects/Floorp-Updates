@@ -1,21 +1,6 @@
 {
     "experiments": [
         {
-            "id": "chrome_web_store_install",
-            "salt": "chrome_web_store_install_v1_2025",
-            "description": "Enable installation of Chrome Web Store extensions",
-            "rollout": 45,
-            "start": "2025-01-01",
-            "end": "2026-12-31",
-            "variants": [
-                {
-                    "id": "enabled",
-                    "name": "Enabled",
-                    "weight": 100
-                }
-            ]
-        },
-        {
             "id": "pwa_taskbar_integration_linux",
             "salt": "pwa_taskbar_integration_linux_v1_2025",
             "description": "On using GTK Linux, OS Integration PWA be available",
