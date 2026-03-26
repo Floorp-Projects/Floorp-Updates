@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-    <update type="minor" displayVersion="148.0.3@12.11.0" appVersion="148.0.3" platformVersion="148.0.3" buildID="20260313064057" appVersion2="12.11.0" buildID2="019ce83c-6889-73f6-afdf-dfa59622f943" detailsURL="https://blog.floorp.app/categories/release/">
-        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.11.0/floorp-mac-universal-full.mar" size="142702201"/>
+    <update type="minor" displayVersion="149.0.1@12.12.0" appVersion="149.0.1" platformVersion="149.0.1" buildID="20260326065849" appVersion2="12.12.0" buildID2="019d2b05-28b9-768c-a3e7-bee50b0b026b" detailsURL="https://blog.floorp.app/categories/release/">
+        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.12.0/floorp-mac-universal-full.mar" size="143351901"/>
     </update>
 </updates>
