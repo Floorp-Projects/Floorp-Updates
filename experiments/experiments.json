@@ -1,24 +1,10 @@
 {
     "experiments": [
         {
-            "id": "pwa_taskbar_integration_linux",
-            "salt": "pwa_taskbar_integration_linux_v1_2025",
-            "description": "On using GTK Linux, OS Integration PWA be available",
-            "rollout": 10,
-            "start": "2025-01-01",
-            "end": "2026-12-31",
-            "variants": [
-                {
-                    "id": "enabled",
-                    "weight": 100
-                }
-            ]
-        },
-        {
             "id": "split_view_advanced",
             "salt": "split_view_advanced_v1",
             "description": "Enables the advanced multi-pane split view feature",
-            "rollout": 20,
+            "rollout": 50,
             "start": "2025-01-01",
             "end": "2026-12-31",
             "variants": [
