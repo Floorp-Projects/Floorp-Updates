@@ -1,3 +1,22 @@
 {
-    "experiments": []
+    "experiments": [
+        {
+            "id": "pwa_container_support",
+            "name": "PWA Container Support",
+            "description": "Enable Firefox Container assignment for PWA/Site-Specific Browser apps",
+            "salt": "pwa-container-2026",
+            "rollout": 100,
+            "start": "2026-06-16",
+            "variants": [
+                {
+                    "id": "enabled",
+                    "weight": 100
+                },
+                {
+                    "id": "control",
+                    "weight": 0
+                }
+            ]
+        }
+    ]
 }
