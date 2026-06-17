@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-    <update type="minor" displayVersion="151.0@12.14.2" appVersion="151.0" platformVersion="151.0" buildID="20260516133832" appVersion2="12.14.2" buildID2="019e31c0-e7ad-72d8-bd58-bd076a539b53" detailsURL="https://blog.floorp.app/categories/release/">
-        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.14.2/floorp-windows-x86_64-full.mar" size="106089769"/>
+    <update type="minor" displayVersion="152.0@12.15.0" appVersion="152.0" platformVersion="152.0" buildID="20260616143730" appVersion2="12.15.0" buildID2="019ed413-63ba-7643-8c39-6b6e7527ab47" detailsURL="https://blog.floorp.app/categories/release/">
+        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.15.0/floorp-windows-x86_64-full.mar" size="107152810"/>
     </update>
 </updates>
