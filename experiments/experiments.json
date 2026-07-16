@@ -17,6 +17,19 @@
                     "weight": 0
                 }
             ]
+        },
+        {
+            "id": "floorp_ip_protection",
+            "name": "Floorp Browser VPN",
+            "description": "Enable Browser VPN using Firefox IP Protection",
+            "salt": "floorp_ip_protection_v1_2026",
+            "rollout": 100,
+            "variants": [
+                {
+                    "id": "enabled",
+                    "weight": 100
+                }
+            ]
         }
     ]
 }
