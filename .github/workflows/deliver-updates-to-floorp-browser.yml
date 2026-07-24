@@ -41,6 +41,10 @@ on:
 
 name: Deliver updates to Floorp Browser
 
+concurrency:
+  group: floorp-updates-writer
+  cancel-in-progress: false
+
 jobs:
   deliver-updates:
     runs-on: ubuntu-22.04
@@ -54,9 +58,22 @@ jobs:
           echo "TARGET_OS=${{ inputs.os }}" >> $GITHUB_ENV
 
       - name: Clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          fetch-depth: 0
+          ref: main
           token: ${{ secrets.PAT }}
+
+      - name: Capture and verify base SHA
+        run: |
+          set -euo pipefail
+          BASE_SHA=$(git rev-parse HEAD)
+          REMOTE_SHA=$(git ls-remote --exit-code origin refs/heads/main | awk '{print $1}')
+          if [[ "$REMOTE_SHA" != "$BASE_SHA" ]]; then
+            echo "Checked-out main $BASE_SHA does not match remote main $REMOTE_SHA" >&2
+            exit 1
+          fi
+          echo "BASE_SHA=$BASE_SHA" >> "$GITHUB_ENV"
 
       - name: Calculate mar file size
         run: |
@@ -133,31 +150,60 @@ jobs:
 
       - name: Copy files
         run: |
+          set -euo pipefail
+          if [[ ! "$DISPLAY_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "DISPLAY_VERSION must be a numeric three-part legacy version" >&2
+            exit 1
+          fi
+          LEGACY_PATHS_FILE="$RUNNER_TEMP/legacy-update-paths.txt"
+          : > "$LEGACY_PATHS_FILE"
+          echo "LEGACY_PATHS_FILE=$LEGACY_PATHS_FILE" >> "$GITHUB_ENV"
+
           mkdir -p browser/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/${{ inputs.arch }}
-          for dir in $(ls -l browser | grep ^d | awk '{print $9}'); do
-            echo $dir
-            mkdir -p browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}
-            if [[ "$dir" != "beta" ]]; then
-              if [[ "$dir" == "${{ env.DISPLAY_VERSION }}" ]]; then
-                cp ~/update_tmpfiles/update_notfound.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
-              else
-                cp ~/update_tmpfiles/update_found.xml browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml
-              fi
+          while IFS= read -r dir; do
+            if [[ ! "$dir" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Skipping reserved or non-version browser directory: $dir"
+              continue
             fi
-          done
+            echo "$dir"
+            mkdir -p browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}
+            TARGET_PATH="browser/${dir}/${{ inputs.os }}/${{ inputs.arch }}/update.xml"
+            if [[ "$dir" == "${{ env.DISPLAY_VERSION }}" ]]; then
+              cp ~/update_tmpfiles/update_notfound.xml "$TARGET_PATH"
+            else
+              cp ~/update_tmpfiles/update_found.xml "$TARGET_PATH"
+            fi
+            printf '%s\n' "$TARGET_PATH" >> "$LEGACY_PATHS_FILE"
+          done < <(find browser -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
 
           mkdir -p systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}
-          cp ~/update_tmpfiles/update_addon.xml systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/update.xml
+          ADDON_PATH="systemAddon/xml/${{ env.DISPLAY_VERSION }}/${{ inputs.os }}/update.xml"
+          cp ~/update_tmpfiles/update_addon.xml "$ADDON_PATH"
+          printf '%s\n' "$ADDON_PATH" >> "$LEGACY_PATHS_FILE"
 
       - name: Commit
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          while IFS= read -r path; do
+            if [[ "$path" =~ ^browser/[0-9]+\.[0-9]+\.[0-9]+/(WINNT|Linux|Darwin)/(x86_64|x86|aarch64)/update\.xml$ ]] || \
+               [[ "$path" =~ ^systemAddon/xml/[0-9]+\.[0-9]+\.[0-9]+/(WINNT|Linux|Darwin)/update\.xml$ ]]; then
+              git add -- "$path"
+            else
+              echo "Refusing to stage unexpected legacy path: $path" >&2
+              exit 1
+            fi
+          done < "$LEGACY_PATHS_FILE"
           if git diff --cached --quiet; then
             echo "🛈 変更がないためコミットをスキップします。"
             exit 0
           fi
+          git fetch --no-tags origin main
+          REMOTE_SHA=$(git rev-parse origin/main)
+          if [[ "$REMOTE_SHA" != "$BASE_SHA" ]]; then
+            echo "Remote main drifted from $BASE_SHA to $REMOTE_SHA; refusing stale legacy update" >&2
+            exit 1
+          fi
           git commit -m "A new version of Floorp Browser has been released! (${{ env.DISPLAY_VERSION }} - ${{ inputs.os }} ${{ inputs.arch }})"
-          git pull -r
-          git push origin
+          git push origin HEAD:main

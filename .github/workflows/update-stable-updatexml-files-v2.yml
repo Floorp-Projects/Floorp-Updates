@@ -1,0 +1,350 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+name: Deliver Floorp Stable updates v2
+run-name: Stable v2 ${{ inputs['app-version2'] }} (${{ inputs['request-id'] }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      win-mar-url:
+        type: string
+        required: true
+        description: Windows x86_64 complete MAR file URL
+      linux-mar-url:
+        type: string
+        required: true
+        description: Linux x86_64 complete MAR file URL
+      linux-aarch64-mar-url:
+        type: string
+        required: true
+        description: Linux aarch64 complete MAR file URL
+      mac-mar-url:
+        type: string
+        required: true
+        description: macOS Universal complete MAR file URL
+      win-meta-url:
+        type: string
+        required: true
+        description: Windows schema-v2 metadata URL
+      linux-meta-url:
+        type: string
+        required: true
+        description: Linux x86_64 schema-v2 metadata URL
+      linux-aarch64-meta-url:
+        type: string
+        required: true
+        description: Linux aarch64 schema-v2 metadata URL
+      mac-meta-url:
+        type: string
+        required: true
+        description: macOS schema-v2 metadata URL
+      firefox-version:
+        type: string
+        required: true
+        description: Firefox version (for example, 153.0)
+      app-version2:
+        type: string
+        required: true
+        description: Floorp version (for example, 12.16.4)
+      request-id:
+        type: string
+        required: true
+        description: Unique caller correlation ID
+      dry-run:
+        type: boolean
+        required: false
+        default: false
+        description: Validate and generate artifacts without committing or deploying
+
+permissions:
+  contents: write
+
+concurrency:
+  group: floorp-updates-writer
+  cancel-in-progress: false
+
+jobs:
+  deliver-stable-updates-v2:
+    runs-on: ubuntu-22.04
+    env:
+      APP_VERSION2: ${{ inputs['app-version2'] }}
+      DRY_RUN: ${{ inputs['dry-run'] }}
+      FIREFOX_VERSION: ${{ inputs['firefox-version'] }}
+      LINUX_AARCH64_MAR_URL: ${{ inputs['linux-aarch64-mar-url'] }}
+      LINUX_AARCH64_META_URL: ${{ inputs['linux-aarch64-meta-url'] }}
+      LINUX_MAR_URL: ${{ inputs['linux-mar-url'] }}
+      LINUX_META_URL: ${{ inputs['linux-meta-url'] }}
+      MAC_MAR_URL: ${{ inputs['mac-mar-url'] }}
+      MAC_META_URL: ${{ inputs['mac-meta-url'] }}
+      REQUEST_ID: ${{ inputs['request-id'] }}
+      WIN_MAR_URL: ${{ inputs['win-mar-url'] }}
+      WIN_META_URL: ${{ inputs['win-meta-url'] }}
+    steps:
+      - name: Checkout exact main base
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          ref: main
+          token: ${{ secrets.PAT }}
+
+      - name: Capture and verify base SHA
+        id: base
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$REQUEST_ID" =~ ^[A-Za-z0-9._-]{1,80}$ ]]; then
+            echo "request-id must match ^[A-Za-z0-9._-]{1,80}$" >&2
+            exit 1
+          fi
+          BASE_SHA=$(git rev-parse HEAD)
+          REMOTE_SHA=$(git ls-remote --exit-code origin refs/heads/main | awk '{print $1}')
+          if [[ "$REMOTE_SHA" != "$BASE_SHA" ]]; then
+            echo "Checked-out main $BASE_SHA does not match remote main $REMOTE_SHA" >&2
+            exit 1
+          fi
+          echo "base_sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Validate canonical release URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          RELEASE_BASE="https://github.com/Floorp-Projects/Floorp/releases/download/v${APP_VERSION2}"
+          expect_url() {
+            local actual=$1
+            local expected=$2
+            local label=$3
+            if [[ "$actual" != "$expected" ]]; then
+              echo "$label must be exactly $expected" >&2
+              exit 1
+            fi
+          }
+          expect_url "$WIN_MAR_URL" "$RELEASE_BASE/floorp-windows-x86_64-full.mar" "win-mar-url"
+          expect_url "$LINUX_MAR_URL" "$RELEASE_BASE/floorp-linux-x86_64-full.mar" "linux-mar-url"
+          expect_url "$LINUX_AARCH64_MAR_URL" "$RELEASE_BASE/floorp-linux-aarch64-full.mar" "linux-aarch64-mar-url"
+          expect_url "$MAC_MAR_URL" "$RELEASE_BASE/floorp-mac-universal-full.mar" "mac-mar-url"
+          expect_url "$WIN_META_URL" "$RELEASE_BASE/win-meta.json" "win-meta-url"
+          expect_url "$LINUX_META_URL" "$RELEASE_BASE/linux-meta.json" "linux-meta-url"
+          expect_url "$LINUX_AARCH64_META_URL" "$RELEASE_BASE/linux-aarch64-meta.json" "linux-aarch64-meta-url"
+          expect_url "$MAC_META_URL" "$RELEASE_BASE/mac-meta.json" "mac-meta-url"
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+        with:
+          deno-version: v2.x
+
+      - name: Run validator regression tests
+        run: deno test --allow-read --allow-write scripts/stable-update-v2_test.ts
+
+      - name: Download metadata and MAR files
+        id: downloads
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORK_DIR="$RUNNER_TEMP/stable-update-v2-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          mkdir -p "$WORK_DIR"
+          download() {
+            local url=$1
+            local output=$2
+            curl --fail --show-error --silent --location \
+              --proto '=https' --tlsv1.2 --retry 3 \
+              --output "$output" "$url"
+          }
+          download "$WIN_META_URL" "$WORK_DIR/win-meta.json"
+          download "$LINUX_META_URL" "$WORK_DIR/linux-meta.json"
+          download "$LINUX_AARCH64_META_URL" "$WORK_DIR/linux-aarch64-meta.json"
+          download "$MAC_META_URL" "$WORK_DIR/mac-meta.json"
+          download "$WIN_MAR_URL" "$WORK_DIR/windows.mar"
+          download "$LINUX_MAR_URL" "$WORK_DIR/linux.mar"
+          download "$LINUX_AARCH64_MAR_URL" "$WORK_DIR/linux-aarch64.mar"
+          download "$MAC_MAR_URL" "$WORK_DIR/mac.mar"
+          echo "work_dir=$WORK_DIR" >> "$GITHUB_OUTPUT"
+
+      - name: Validate manifest set and generate five endpoints
+        id: apply
+        env:
+          WORK_DIR: ${{ steps.downloads.outputs.work_dir }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          APPLY_JSON=$(deno run --allow-read --allow-write scripts/stable-update-v2.ts \
+            --firefox-version "$FIREFOX_VERSION" \
+            --app-version2 "$APP_VERSION2" \
+            --state-file browser/stable/stable-state.json \
+            --output-root browser/stable \
+            --windows-meta "$WORK_DIR/win-meta.json" \
+            --windows-mar "$WORK_DIR/windows.mar" \
+            --windows-mar-url "$WIN_MAR_URL" \
+            --linux-meta "$WORK_DIR/linux-meta.json" \
+            --linux-mar "$WORK_DIR/linux.mar" \
+            --linux-mar-url "$LINUX_MAR_URL" \
+            --linuxAarch64-meta "$WORK_DIR/linux-aarch64-meta.json" \
+            --linuxAarch64-mar "$WORK_DIR/linux-aarch64.mar" \
+            --linuxAarch64-mar-url "$LINUX_AARCH64_MAR_URL" \
+            --mac-meta "$WORK_DIR/mac-meta.json" \
+            --mac-mar "$WORK_DIR/mac.mar" \
+            --mac-mar-url "$MAC_MAR_URL")
+          TRANSITION=$(jq -er '.result | select(. == "updated" or . == "noop")' <<< "$APPLY_JSON")
+          MANIFEST_SET_ID=$(jq -er '.manifest_set_id' browser/stable/stable-state.json)
+          echo "transition=$TRANSITION" >> "$GITHUB_OUTPUT"
+          echo "manifest_set_id=$MANIFEST_SET_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Build dry-run diff
+        if: ${{ inputs['dry-run'] }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --binary -- \
+            browser/stable/WINNT/x86_64/update.xml \
+            browser/stable/Linux/x86_64/update.xml \
+            browser/stable/Linux/aarch64/update.xml \
+            browser/stable/Darwin/x86_64/update.xml \
+            browser/stable/Darwin/aarch64/update.xml \
+            browser/stable/stable-state.json \
+            > "$RUNNER_TEMP/stable-update.diff"
+
+      - name: Commit and push exact stable paths
+        id: commit
+        if: ${{ !inputs['dry-run'] && steps.apply.outputs.transition == 'updated' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE_SHA=${{ steps.base.outputs.base_sha }}
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            browser/stable/WINNT/x86_64/update.xml \
+            browser/stable/Linux/x86_64/update.xml \
+            browser/stable/Linux/aarch64/update.xml \
+            browser/stable/Darwin/x86_64/update.xml \
+            browser/stable/Darwin/aarch64/update.xml \
+            browser/stable/stable-state.json
+          if git diff --cached --quiet; then
+            echo "Validator reported an update but no exact stable path changed" >&2
+            exit 1
+          fi
+          git fetch --no-tags origin main
+          REMOTE_SHA=$(git rev-parse origin/main)
+          if [[ "$REMOTE_SHA" != "$BASE_SHA" ]]; then
+            echo "Remote main drifted from $BASE_SHA to $REMOTE_SHA; refusing stale update" >&2
+            exit 1
+          fi
+          git commit -m "Update Floorp Stable v2 (${APP_VERSION2}; ${REQUEST_ID})"
+          UPDATES_COMMIT_SHA=$(git rev-parse HEAD)
+          git push origin HEAD:main
+          echo "updates_commit_sha=$UPDATES_COMMIT_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Confirm no-op did not modify endpoints
+        if: ${{ !inputs['dry-run'] && steps.apply.outputs.transition == 'noop' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --quiet -- \
+            browser/stable/WINNT/x86_64/update.xml \
+            browser/stable/Linux/x86_64/update.xml \
+            browser/stable/Linux/aarch64/update.xml \
+            browser/stable/Darwin/x86_64/update.xml \
+            browser/stable/Darwin/aarch64/update.xml \
+            browser/stable/stable-state.json
+
+      - name: Create correlated result
+        id: result
+        env:
+          BASE_SHA: ${{ steps.base.outputs.base_sha }}
+          MANIFEST_SET_ID: ${{ steps.apply.outputs.manifest_set_id }}
+          PUSHED_SHA: ${{ steps.commit.outputs.updates_commit_sha }}
+          TRANSITION: ${{ steps.apply.outputs.transition }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          endpoint_hash() {
+            printf 'sha256:%s' "$(sha256sum "$1" | cut -d' ' -f1)"
+          }
+          WIN_HASH=$(endpoint_hash browser/stable/WINNT/x86_64/update.xml)
+          LINUX_HASH=$(endpoint_hash browser/stable/Linux/x86_64/update.xml)
+          LINUX_AARCH64_HASH=$(endpoint_hash browser/stable/Linux/aarch64/update.xml)
+          MAC_X64_HASH=$(endpoint_hash browser/stable/Darwin/x86_64/update.xml)
+          MAC_AARCH64_HASH=$(endpoint_hash browser/stable/Darwin/aarch64/update.xml)
+
+          if [[ "$DRY_RUN" == "true" ]]; then
+            STATUS=dry-run
+            UPDATES_COMMIT_SHA=""
+            DEPLOY_REQUIRED=false
+          elif [[ "$TRANSITION" == "updated" ]]; then
+            STATUS=updated
+            UPDATES_COMMIT_SHA=$PUSHED_SHA
+            DEPLOY_REQUIRED=true
+          else
+            STATUS=noop
+            UPDATES_COMMIT_SHA=$BASE_SHA
+            DEPLOY_REQUIRED=false
+          fi
+
+          RESULT_FILE="$RUNNER_TEMP/stable-update-result.json"
+          jq -n \
+            --arg request_id "$REQUEST_ID" \
+            --arg status "$STATUS" \
+            --arg transition "$TRANSITION" \
+            --arg manifest_set_id "$MANIFEST_SET_ID" \
+            --arg base_sha "$BASE_SHA" \
+            --arg updates_commit_sha "$UPDATES_COMMIT_SHA" \
+            --argjson deploy_required "$DEPLOY_REQUIRED" \
+            --arg win_hash "$WIN_HASH" \
+            --arg linux_hash "$LINUX_HASH" \
+            --arg linux_aarch64_hash "$LINUX_AARCH64_HASH" \
+            --arg mac_x64_hash "$MAC_X64_HASH" \
+            --arg mac_aarch64_hash "$MAC_AARCH64_HASH" \
+            '{
+              schema_version: 1,
+              request_id: $request_id,
+              status: $status,
+              transition: $transition,
+              manifest_set_id: $manifest_set_id,
+              base_sha: $base_sha,
+              updates_commit_sha: (if $updates_commit_sha == "" then null else $updates_commit_sha end),
+              deploy_required: $deploy_required,
+              endpoint_sha256: {
+                "browser/stable/WINNT/x86_64/update.xml": $win_hash,
+                "browser/stable/Linux/x86_64/update.xml": $linux_hash,
+                "browser/stable/Linux/aarch64/update.xml": $linux_aarch64_hash,
+                "browser/stable/Darwin/x86_64/update.xml": $mac_x64_hash,
+                "browser/stable/Darwin/aarch64/update.xml": $mac_aarch64_hash
+              }
+            }' > "$RESULT_FILE"
+
+          if [[ "$DRY_RUN" == "true" ]]; then
+            BUNDLE="$RUNNER_TEMP/stable-update-staging"
+            mkdir -p "$BUNDLE/browser/stable/WINNT/x86_64" \
+              "$BUNDLE/browser/stable/Linux/x86_64" \
+              "$BUNDLE/browser/stable/Linux/aarch64" \
+              "$BUNDLE/browser/stable/Darwin/x86_64" \
+              "$BUNDLE/browser/stable/Darwin/aarch64"
+            cp browser/stable/WINNT/x86_64/update.xml "$BUNDLE/browser/stable/WINNT/x86_64/update.xml"
+            cp browser/stable/Linux/x86_64/update.xml "$BUNDLE/browser/stable/Linux/x86_64/update.xml"
+            cp browser/stable/Linux/aarch64/update.xml "$BUNDLE/browser/stable/Linux/aarch64/update.xml"
+            cp browser/stable/Darwin/x86_64/update.xml "$BUNDLE/browser/stable/Darwin/x86_64/update.xml"
+            cp browser/stable/Darwin/aarch64/update.xml "$BUNDLE/browser/stable/Darwin/aarch64/update.xml"
+            cp browser/stable/stable-state.json "$BUNDLE/browser/stable/stable-state.json"
+            cp "$RUNNER_TEMP/stable-update.diff" "$BUNDLE/stable-update.diff"
+          fi
+
+          {
+            echo "### Stable update v2 result"
+            echo
+            echo "- Request: \`$REQUEST_ID\`"
+            echo "- Status: \`$STATUS\`"
+            echo "- Manifest set: \`$MANIFEST_SET_ID\`"
+            echo "- Updates commit: \`${UPDATES_COMMIT_SHA:-none (dry run)}\`"
+            echo "- Deploy required: \`$DEPLOY_REQUIRED\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload correlated result
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: stable-update-result-${{ inputs['request-id'] }}
+          path: |
+            ${{ runner.temp }}/stable-update-result.json
+            ${{ runner.temp }}/stable-update-staging
+          if-no-files-found: error
+          retention-days: 30

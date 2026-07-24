@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "status": "legacy-bootstrap",
+  "version": "153.0",
+  "app_version2": "12.16.3",
+  "baseline_commit": "56ab92f48524374d569b467d8f423658d9b8b610",
+  "targets": {
+    "browser/stable/WINNT/x86_64/update.xml": {
+      "buildid": "20260721164720",
+      "buildid2": "019f8b5e-6a66-701a-8e8e-452db858e53a",
+      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.16.3/floorp-windows-x86_64-full.mar",
+      "size": 108702809
+    },
+    "browser/stable/Linux/x86_64/update.xml": {
+      "buildid": "20260721163542",
+      "buildid2": "019f8b5e-a5cc-71ca-86ad-8c944ec24739",
+      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.16.3/floorp-linux-x86_64-full.mar",
+      "size": 98380317
+    },
+    "browser/stable/Linux/aarch64/update.xml": {
+      "buildid": "20260721132359",
+      "buildid2": "019f8b5e-293c-719e-810d-c56eb9382cd9",
+      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.16.3/floorp-linux-aarch64-full.mar",
+      "size": 85160448
+    },
+    "browser/stable/Darwin/x86_64/update.xml": {
+      "buildid": "20260721011812",
+      "buildid2": "019f8b5e-5810-76c1-a3ff-24576b8dbbcf",
+      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.16.3/floorp-mac-universal-full.mar",
+      "size": 150527849
+    },
+    "browser/stable/Darwin/aarch64/update.xml": {
+      "buildid": "20260721011812",
+      "buildid2": "019f8b5e-5810-76c1-a3ff-24576b8dbbcf",
+      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.16.3/floorp-mac-universal-full.mar",
+      "size": 150527849
+    }
+  }
+}

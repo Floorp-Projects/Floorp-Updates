@@ -1,20 +1,58 @@
-on: [push]
+name: Deploy Floorp Updates to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: floorp-updates-production-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     name: Deploy to Cloudflare Pages
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.sha }}
+
+      - name: Verify exact deployment commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHECKED_OUT_SHA=$(git rev-parse HEAD)
+          if [[ "$CHECKED_OUT_SHA" != "$GITHUB_SHA" ]]; then
+            echo "Expected checkout $GITHUB_SHA, got $CHECKED_OUT_SHA" >&2
+            exit 1
+          fi
+
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22.x"
 
+      - name: Verify commit is still latest main
+        shell: bash
+        run: |
+          set -euo pipefail
+          LATEST_MAIN_SHA=$(git ls-remote --exit-code origin refs/heads/main | awk '{print $1}')
+          if [[ "$LATEST_MAIN_SHA" != "$GITHUB_SHA" ]]; then
+            echo "Refusing stale production deploy: event SHA $GITHUB_SHA is no longer main ($LATEST_MAIN_SHA)" >&2
+            exit 1
+          fi
+
       - name: Publish
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: |
-            pages deploy . --project-name=floorp-updates --branch=main
+            pages deploy . --project-name=floorp-updates --branch=main --commit-hash=${{ github.sha }}
