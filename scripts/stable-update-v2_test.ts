@@ -102,6 +102,13 @@ const BUILD_IDS_2: Record<TargetKey, string> = {
   mac: "019f9000-0000-7000-8000-000000000004",
 };
 
+// Keep the fixture independent from the production stable-state.json. The
+// latter advances on every release, while these tests need a manifest that is
+// newer than the copied legacy state in order to exercise the update path.
+const FIXTURE_APP_VERSION = "99.99.99";
+const FIXTURE_OLDER_APP_VERSION = "99.99.98";
+const FIXTURE_NEWER_APP_VERSION = "100.0.0";
+
 async function refreshManifestSetId(fixture: Fixture): Promise<string> {
   const forIdentity = Object.fromEntries(
     TARGET_DEFINITIONS.map((definition) => [definition.key, {
@@ -125,7 +132,9 @@ async function writeMetas(fixture: Fixture): Promise<void> {
   }
 }
 
-async function createFixture(appVersion2 = "12.16.4"): Promise<Fixture> {
+async function createFixture(
+  appVersion2 = FIXTURE_APP_VERSION,
+): Promise<Fixture> {
   const root = await Deno.makeTempDir({ prefix: "stable-update-v2-test-" });
   const outputRoot = `${root}/browser/stable`;
   await Deno.mkdir(outputRoot, { recursive: true });
@@ -206,7 +215,7 @@ async function createFixture(appVersion2 = "12.16.4"): Promise<Fixture> {
 
 async function usingFixture(
   action: (fixture: Fixture) => Promise<void>,
-  appVersion2 = "12.16.4",
+  appVersion2 = FIXTURE_APP_VERSION,
 ): Promise<void> {
   const fixture = await createFixture(appVersion2);
   try {
@@ -234,7 +243,7 @@ Deno.test("Firefox dotted-version comparison prevents engine rollback", () => {
 Deno.test("valid schema-v2 manifest set validates all four downloaded MARs", async () => {
   await usingFixture(async (fixture) => {
     const manifest = await validateManifestSet(fixture.input);
-    assertEquals(manifest.appVersion2, "12.16.4");
+    assertEquals(manifest.appVersion2, FIXTURE_APP_VERSION);
     assertEquals(
       manifest.manifestSetId,
       fixture.metas.windows.manifest_set_id,
@@ -261,7 +270,7 @@ const invalidCases: Array<{
     name: "metadata display version order",
     expected: "windows.version_display",
     mutate: (fixture) =>
-      fixture.metas.windows.version_display = "153.0@12.16.4",
+      fixture.metas.windows.version_display = `153.0@${FIXTURE_APP_VERSION}`,
   },
   {
     name: "invalid UTC buildid",
@@ -406,7 +415,9 @@ Deno.test("generates all five XMLs with verified SHA512 before publishing state"
       const xml = await Deno.readTextFile(
         `${fixture.input.outputRoot}/${path}`,
       );
-      assert(xml.includes('displayVersion="153.0@12.16.4"'));
+      assert(
+        xml.includes(`displayVersion="153.0@${FIXTURE_APP_VERSION}"`),
+      );
       assert(xml.includes('hashFunction="sha512"'));
       assert(xml.includes('hashValue="'));
     }
@@ -465,15 +476,25 @@ Deno.test("state transition rejects rollback and equivocation, but same manifest
   await usingFixture(async (fixture) => {
     const manifest = await validateManifestSet(fixture.input);
     const next = buildVerifiedState(manifest);
-    const legacy = JSON.parse(
+    const current = JSON.parse(
       await Deno.readTextFile(fixture.input.statePath),
-    ) as LegacyState;
-    assertEquals(determineTransition(legacy, next), "update");
+    ) as VerifiedState;
+    assertEquals(determineTransition(current, next), "update");
 
-    const sameLegacyVersion = structuredClone(next);
-    sameLegacyVersion.app_version2 = legacy.app_version2;
+    const sameCurrentVersion = structuredClone(next);
+    sameCurrentVersion.app_version2 = current.app_version2;
     await assertRejects(
-      () => determineTransition(legacy, sameLegacyVersion),
+      () => determineTransition(current, sameCurrentVersion),
+      "new manifest must have a newer app version",
+    );
+
+    const legacyBootstrap = structuredClone(current) as unknown as LegacyState;
+    legacyBootstrap.status = "legacy-bootstrap";
+    const sameLegacyVersion = structuredClone(next);
+    sameLegacyVersion.app_version2 = legacyBootstrap.app_version2;
+    assertEquals(determineTransition(legacyBootstrap, next), "update");
+    await assertRejects(
+      () => determineTransition(legacyBootstrap, sameLegacyVersion),
       "legacy bootstrap only accepts a newer app version",
     );
 
@@ -503,7 +524,7 @@ Deno.test("state transition rejects rollback and equivocation, but same manifest
     );
 
     const older = structuredClone(sameVersionDifferentManifest);
-    older.app_version2 = "12.16.3";
+    older.app_version2 = FIXTURE_OLDER_APP_VERSION;
     await assertRejects(
       () => determineTransition(next, older),
       "new manifest must have a newer app version",
@@ -512,7 +533,7 @@ Deno.test("state transition rejects rollback and equivocation, but same manifest
     const newer = structuredClone(
       sameVersionDifferentManifest,
     ) as VerifiedState;
-    newer.app_version2 = "12.17.0";
+    newer.app_version2 = FIXTURE_NEWER_APP_VERSION;
     assertEquals(determineTransition(next, newer), "update");
   });
 });
