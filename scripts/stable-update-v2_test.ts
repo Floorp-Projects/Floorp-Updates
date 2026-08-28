@@ -108,6 +108,8 @@ const BUILD_IDS_2: Record<TargetKey, string> = {
 const FIXTURE_APP_VERSION = "99.99.99";
 const FIXTURE_OLDER_APP_VERSION = "99.99.98";
 const FIXTURE_NEWER_APP_VERSION = "100.0.0";
+const FIXTURE_FIREFOX_VERSION = "9999.0";
+const FIXTURE_OLDER_FIREFOX_VERSION = "9998.0";
 
 async function refreshManifestSetId(fixture: Fixture): Promise<string> {
   const forIdentity = Object.fromEntries(
@@ -160,8 +162,8 @@ async function createFixture(
     artifacts[definition.key] = { marPath, metaPath, marUrl };
     metas[definition.key] = {
       schema_version: 2,
-      version_display: `${appVersion2}@153.0`,
-      version: "153.0",
+      version_display: `${appVersion2}@${FIXTURE_FIREFOX_VERSION}`,
+      version: FIXTURE_FIREFOX_VERSION,
       noraneko_version: appVersion2,
       buildid: BUILD_IDS[definition.key],
       noraneko_buildid: BUILD_IDS_2[definition.key],
@@ -200,7 +202,7 @@ async function createFixture(
   const fixture: Fixture = {
     root,
     input: {
-      firefoxVersion: "153.0",
+      firefoxVersion: FIXTURE_FIREFOX_VERSION,
       appVersion2,
       artifacts,
       statePath,
@@ -264,13 +266,15 @@ const invalidCases: Array<{
   {
     name: "Firefox version",
     expected: "windows.version",
-    mutate: (fixture) => fixture.metas.windows.version = "152.0",
+    mutate: (fixture) =>
+      fixture.metas.windows.version = FIXTURE_OLDER_FIREFOX_VERSION,
   },
   {
     name: "metadata display version order",
     expected: "windows.version_display",
     mutate: (fixture) =>
-      fixture.metas.windows.version_display = `153.0@${FIXTURE_APP_VERSION}`,
+      fixture.metas.windows.version_display =
+        `${FIXTURE_FIREFOX_VERSION}@${FIXTURE_APP_VERSION}`,
   },
   {
     name: "invalid UTC buildid",
@@ -416,7 +420,9 @@ Deno.test("generates all five XMLs with verified SHA512 before publishing state"
         `${fixture.input.outputRoot}/${path}`,
       );
       assert(
-        xml.includes(`displayVersion="153.0@${FIXTURE_APP_VERSION}"`),
+        xml.includes(
+          `displayVersion="${FIXTURE_FIREFOX_VERSION}@${FIXTURE_APP_VERSION}"`,
+        ),
       );
       assert(xml.includes('hashFunction="sha512"'));
       assert(xml.includes('hashValue="'));
@@ -500,11 +506,11 @@ Deno.test("state transition rejects rollback and equivocation, but same manifest
 
     const engineDowngrade = structuredClone(next);
     engineDowngrade.app_version2 = "12.17.0";
-    engineDowngrade.version = "152.0";
+    engineDowngrade.version = FIXTURE_OLDER_FIREFOX_VERSION;
     engineDowngrade.manifest_set_id = `sha256:${"d".repeat(64)}`;
     await assertRejects(
       () => determineTransition(next, engineDowngrade),
-      "must not downgrade Firefox version from 153.0 to 152.0",
+      `must not downgrade Firefox version from ${FIXTURE_FIREFOX_VERSION} to ${FIXTURE_OLDER_FIREFOX_VERSION}`,
     );
 
     assertEquals(determineTransition(next, structuredClone(next)), "noop");
