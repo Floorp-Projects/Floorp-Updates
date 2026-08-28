@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-    <update type="minor" displayVersion="154.0@12.17.0" appVersion="154.0" platformVersion="154.0" buildID="20260820063022" appVersion2="12.17.0" buildID2="01a022d0-fb2d-76de-ba97-224305689e52" detailsURL="https://blog.floorp.app/categories/release/">
-        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.0/floorp-windows-x86_64-full.mar" hashFunction="sha512" hashValue="8d4c836a6087bae4128a6e0e6b48d96b0dfe529f059f11dced73d2d824d03f9d393a22f8d17e777405c4c87704fc2910a7307f0c52826763578be1a44f04e39c" size="111033587"/>
+    <update type="minor" displayVersion="154.0.2@12.17.1" appVersion="154.0.2" platformVersion="154.0.2" buildID="20260826165038" appVersion2="12.17.1" buildID2="01a044ec-990b-76da-80aa-aa68f0a94034" detailsURL="https://blog.floorp.app/categories/release/">
+        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.1/floorp-windows-x86_64-full.mar" hashFunction="sha512" hashValue="4514f05da3c05f429b35f7993c174df6634e8106ad607d0c5c0f8f6da49ebf6aea523ece44db25cc62576e6a91546405bb997d1a6b1d7e9ce7ac8a2ca221cd10" size="115682691"/>
     </update>
 </updates>
