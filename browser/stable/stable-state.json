@@ -1,71 +1,71 @@
 {
   "schema_version": 1,
   "status": "verified",
-  "manifest_set_id": "sha256:d0c205ec98d08a4e52461573156fd8fbd3350dd39d460d244f9154cd2c47f44f",
-  "version": "154.0.2",
-  "app_version2": "12.17.1",
-  "floorp_head_sha": "7e75b00ca08745d47e2b97da82adb3a7a78e59e0",
-  "floorp_run_id": 33113495479,
+  "manifest_set_id": "sha256:2f29610a3086ca09512b03673e0e728d934a7d3ec3e23852048be629fd884f08",
+  "version": "155.0",
+  "app_version2": "12.17.2",
+  "floorp_head_sha": "38bde3075f197b9a88490875d1534bb79d6159a5",
+  "floorp_run_id": 33713343104,
   "targets": {
     "browser/stable/WINNT/x86_64/update.xml": {
       "platform": "WINNT",
       "arch": "x86_64",
       "metadata_arch": "x86_64",
-      "buildid": "20260826165038",
-      "buildid2": "01a044ec-990b-76da-80aa-aa68f0a94034",
-      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.1/floorp-windows-x86_64-full.mar",
+      "buildid": "20260902101625",
+      "buildid2": "01a06680-2f11-73cb-b784-a74d1540a847",
+      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.2/floorp-windows-x86_64-full.mar",
       "name": "floorp-windows-x86_64-full.mar",
-      "size": 115682691,
-      "sha512": "4514f05da3c05f429b35f7993c174df6634e8106ad607d0c5c0f8f6da49ebf6aea523ece44db25cc62576e6a91546405bb997d1a6b1d7e9ce7ac8a2ca221cd10",
-      "metadata_sha256": "sha256:87b4969493ef42237c98b3a2d67466f6728412cfdc2e1e4c56b4e175c7577fc7"
+      "size": 115503563,
+      "sha512": "3eba672f03134f7d7bddf1f851964cb78d76ed74181058a989e1c66b579051e1f4446a2cda0c88995a0de894b5eaa585a95490daa2777a7ccafac38681783236",
+      "metadata_sha256": "sha256:d05ee30e6fbaa9513457738c9eb0545f18b7525a4c2794c4aa8cd659fc99594a"
     },
     "browser/stable/Linux/x86_64/update.xml": {
       "platform": "Linux",
       "arch": "x86_64",
       "metadata_arch": "x86_64",
-      "buildid": "20260826165038",
-      "buildid2": "01a044ec-7c8a-75da-99cb-141b6def74d8",
-      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.1/floorp-linux-x86_64-full.mar",
+      "buildid": "20260902101625",
+      "buildid2": "01a0656e-facc-73eb-ac6d-db2b7d3bdf9e",
+      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.2/floorp-linux-x86_64-full.mar",
       "name": "floorp-linux-x86_64-full.mar",
-      "size": 99849401,
-      "sha512": "fb9d57f39873d25a4b43ab58d51cc55eb7af54a1905c983039e62745df1e9308cd4167b6fef6d406f49286a240ced05dec7224eac6382241ada3b8db52defd47",
-      "metadata_sha256": "sha256:f0dfd1abe111e53192991f309451483141ea7b5a8a643b3083bc5cfffafd8c28"
+      "size": 99652820,
+      "sha512": "fb02e1fff906d34de94a7b6c2d13ca147fb3101281a9168d0e852d42e973ffffcaf72a7f1d703837dd4a97d63a4ee194f26fd79f870386b6d7c5acd5cb0cca15",
+      "metadata_sha256": "sha256:494ebe9375920c901967f87aaadbadc28ecf8317f7a05260cf91077f37f015d3"
     },
     "browser/stable/Linux/aarch64/update.xml": {
       "platform": "Linux",
       "arch": "aarch64",
       "metadata_arch": "aarch64",
-      "buildid": "20260826165038",
-      "buildid2": "01a044ec-86b2-75e8-98f7-1d4f51b5b513",
-      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.1/floorp-linux-aarch64-full.mar",
+      "buildid": "20260902101625",
+      "buildid2": "01a0656f-058c-776b-a401-44533529859a",
+      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.2/floorp-linux-aarch64-full.mar",
       "name": "floorp-linux-aarch64-full.mar",
-      "size": 86557488,
-      "sha512": "53a2ed893bfa9ccca18ae90448231f7eb81fc11e5f409c413e8b51c41182e28cf2edda9706d91aa65e3d8d51b7bdeb4cf28feaa18d4c15c8c6718556e08bbb18",
-      "metadata_sha256": "sha256:14abce50bd0e4acec1cda092cabea5156f7bc291c421a6063bab038d1eef88e2"
+      "size": 86262654,
+      "sha512": "9b4a3ed68c68defc77a06695984322d3061479be62c0529b2e97dbd3f5c11cf5bd46f8d9973aef668a54190b9eb3243f38f86534aec2b5a80aaf76ca7710fc3d",
+      "metadata_sha256": "sha256:04fceb9c0f92dbda66d1f16732a9a65eb6fc4a8a7e171eaf04b9f28c3a493092"
     },
     "browser/stable/Darwin/x86_64/update.xml": {
       "platform": "Darwin",
       "arch": "x86_64",
       "metadata_arch": "universal",
-      "buildid": "20260826165038",
-      "buildid2": "01a044ec-3d0a-765d-8315-75ba17651f4e",
-      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.1/floorp-mac-universal-full.mar",
+      "buildid": "20260902101625",
+      "buildid2": "01a0656f-030e-753a-8404-827a7db81fa2",
+      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.2/floorp-mac-universal-full.mar",
       "name": "floorp-mac-universal-full.mar",
-      "size": 154774185,
-      "sha512": "e4fbf7e223cc56a0513c44eb441555496074ba117db5b8f1b3588a46fdc1e631b8e5d7c7aa710affce845d6214318cdb3ba1f663162ca549bc6492197eee4e41",
-      "metadata_sha256": "sha256:cf4eb60af2daa527c1d4944f41258ee07f3986b999a93fd89368a2b6a8fa9113"
+      "size": 154682269,
+      "sha512": "a2e368ba64f9460671f1643110adcc6246444c65b8913d40970cdf298cadc85b6ffbb710edbae83af7c4bef6758c46f0ebba58e5b9aaf4ed4ea8789e41439c47",
+      "metadata_sha256": "sha256:c3e7542fd05d914875c8b18ecdaaf81badf28d04fd0781f13ce0a9f5c6438b12"
     },
     "browser/stable/Darwin/aarch64/update.xml": {
       "platform": "Darwin",
       "arch": "aarch64",
       "metadata_arch": "universal",
-      "buildid": "20260826165038",
-      "buildid2": "01a044ec-3d0a-765d-8315-75ba17651f4e",
-      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.1/floorp-mac-universal-full.mar",
+      "buildid": "20260902101625",
+      "buildid2": "01a0656f-030e-753a-8404-827a7db81fa2",
+      "url": "https://github.com/Floorp-Projects/Floorp/releases/download/v12.17.2/floorp-mac-universal-full.mar",
       "name": "floorp-mac-universal-full.mar",
-      "size": 154774185,
-      "sha512": "e4fbf7e223cc56a0513c44eb441555496074ba117db5b8f1b3588a46fdc1e631b8e5d7c7aa710affce845d6214318cdb3ba1f663162ca549bc6492197eee4e41",
-      "metadata_sha256": "sha256:cf4eb60af2daa527c1d4944f41258ee07f3986b999a93fd89368a2b6a8fa9113"
+      "size": 154682269,
+      "sha512": "a2e368ba64f9460671f1643110adcc6246444c65b8913d40970cdf298cadc85b6ffbb710edbae83af7c4bef6758c46f0ebba58e5b9aaf4ed4ea8789e41439c47",
+      "metadata_sha256": "sha256:c3e7542fd05d914875c8b18ecdaaf81badf28d04fd0781f13ce0a9f5c6438b12"
     }
   }
 }
