@@ -19,6 +19,23 @@
             ]
         },
         {
+            "id": "pwa_mac_app_shim",
+            "name": "macOS Native Web App Shim",
+            "description": "Test native macOS Web App windows and Dock identity",
+            "salt": "pwa-mac-app-shim-v1-2026",
+            "rollout": 20,
+            "variants": [
+                {
+                    "id": "enabled",
+                    "weight": 100
+                },
+                {
+                    "id": "control",
+                    "weight": 0
+                }
+            ]
+        },
+        {
             "id": "floorp_ip_protection",
             "name": "Floorp Browser VPN",
             "description": "Enable Browser VPN using Firefox IP Protection",
