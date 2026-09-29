@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-    <update type="minor" displayVersion="156.0.1@12.18.1" appVersion="156.0.1" platformVersion="156.0.1" buildID="20260922152932" appVersion2="12.18.1" buildID2="01a0ccc9-074a-77dd-8906-b648b8fb4292" detailsURL="https://blog.floorp.app/categories/release/">
-        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.18.1/floorp-mac-universal-full.mar" hashFunction="sha512" hashValue="95410fcbb815b8c4a5d7ccd1ea01df7356bba4508e49df0317c51c5736cae15776b94e6d8bc79d2f876861ce17a9b6a79a70b846b58cca041e11c4d00eb579b0" size="161053825"/>
+    <update type="minor" displayVersion="157.0@12.19.0" appVersion="157.0" platformVersion="157.0" buildID="20260926171135" appVersion2="12.19.0" buildID2="01a0ee4e-fd68-7245-bcfe-3f6511e1b76d" detailsURL="https://blog.floorp.app/categories/release/">
+        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.19.0/floorp-mac-universal-full.mar" hashFunction="sha512" hashValue="6348cb6f2256df759b196665077e2f2a9e3acc33b435acf542c4b73dff5a47cb4898182d2c995dd031355f8bb4183e92a04f1ce673bd23495928f7c5fa0c8c39" size="162119568"/>
     </update>
 </updates>
