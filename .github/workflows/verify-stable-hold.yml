@@ -1,0 +1,59 @@
+name: Verify the public stable update hold
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/verify-stable-hold.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-stable-hold.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout the exact verification source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify the five canonical public endpoints
+        run: |
+          set -euo pipefail
+          HOLD_QA_DIR="$RUNNER_TEMP/stable-hold-public-evidence"
+          mkdir -p "$HOLD_QA_DIR"
+          for platform in WINNT/x86_64 Linux/x86_64 Linux/aarch64 Darwin/x86_64 Darwin/aarch64; do
+            output="$HOLD_QA_DIR/${platform//\//-}.xml"
+            curl --fail --show-error --silent --location \
+              --proto '=https' --tlsv1.2 --connect-timeout 15 --max-time 45 \
+              "https://updates.floorp.app/browser/stable/$platform/update.xml" \
+              --output "$output"
+          done
+          python3 - "$HOLD_QA_DIR" <<'PY'
+          import datetime, hashlib, json, pathlib, sys, xml.etree.ElementTree as ET
+          evidence = pathlib.Path(sys.argv[1])
+          platforms = ['WINNT/x86_64', 'Linux/x86_64', 'Linux/aarch64', 'Darwin/x86_64', 'Darwin/aarch64']
+          results = []
+          for platform in platforms:
+              expected = pathlib.Path('browser/stable', platform, 'update.xml').read_bytes()
+              actual = evidence.joinpath(platform.replace('/', '-') + '.xml').read_bytes()
+              for label, data in [('source', expected), ('public', actual)]:
+                  root = ET.fromstring(data)
+                  if root.tag != 'updates' or root.attrib or len(root):
+                      raise ValueError(f'{platform}: {label} still offers an update')
+              if actual != expected:
+                  raise ValueError(f'{platform}: public response differs from the checked-out hold')
+              results.append({'url': f'https://updates.floorp.app/browser/stable/{platform}/update.xml', 'sha256': hashlib.sha256(actual).hexdigest(), 'offers': 0})
+          result = {'checkedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'endpoints': results}
+          evidence.joinpath('public-stable-hold-result.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+          PY
+      - name: Save public update hold evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: stable-hold-public-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/stable-hold-public-evidence
+          if-no-files-found: error
