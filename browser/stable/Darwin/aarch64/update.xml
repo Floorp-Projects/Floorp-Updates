@@ -1,3 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <updates>
+    <update type="minor" displayVersion="157.0.1@12.20.1" appVersion="157.0.1" platformVersion="157.0.1" buildID="20261007125927" appVersion2="12.20.1" buildID2="01a11dd6-5f24-71d8-9ad1-5527d0ff23b3" detailsURL="https://blog.floorp.app/categories/release/">
+        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.20.1/floorp-mac-universal-full.mar" hashFunction="sha512" hashValue="0826d6cebde818baf5b361c6f5e147892d94d3e2ce5174f2f314993994d17d2c22cfac5c756b764523032c31781649d2ee1d7a8d86a7a58a434b13f1dbdefe6c" size="162206092"/>
+    </update>
 </updates>

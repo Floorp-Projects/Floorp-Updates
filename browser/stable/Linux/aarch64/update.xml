@@ -1,3 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <updates>
+    <update type="minor" displayVersion="157.0.1@12.20.1" appVersion="157.0.1" platformVersion="157.0.1" buildID="20261007125927" appVersion2="12.20.1" buildID2="01a11dd6-6011-7073-893c-e5843ad94f7c" detailsURL="https://blog.floorp.app/categories/release/">
+        <patch type="complete" URL="https://github.com/Floorp-Projects/Floorp/releases/download/v12.20.1/floorp-linux-aarch64-full.mar" hashFunction="sha512" hashValue="6c3812634283c96b091d9274f7ade1417acc4e26906f57d7bde51be17ac821dd9ac29561d563dbbc45a3c77e6c617b0a55d7648fbd362f0b58688f673f37291a" size="93820550"/>
+    </update>
 </updates>
